@@ -84,8 +84,10 @@ public class TaskManager {
     // d. Создание. Сам объект должен передаваться в качестве параметра [Subtask]
     public Subtask createAndAddSubtask(Subtask subtask, Epic epic) {
         subtask.setId(createAndGetNewId());
+        subtask.setEpic(epic);
         subtasks.put(subtask.getId(), subtask);
         epic.addSubtask(subtask);
+        updateEpicStatus(epic);
         return subtask;
     }
 
@@ -98,6 +100,7 @@ public class TaskManager {
             subtasks.put(subtask.getId(), subtask);
         }
 
+        updateEpicStatus(epic);
         return epic;
     }
 
@@ -141,6 +144,7 @@ public class TaskManager {
 
             if (epic != null) {
                 epic.removeSubtask(subtask);
+                updateEpicStatus(epic);
             }
 
             return;
