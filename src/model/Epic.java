@@ -15,11 +15,16 @@ public class Epic extends Task {
     }
 
     public void addSubtask(Subtask subtask) {
-
+        subtasks.put(subtask.getId(), subtask);
     }
 
     public void removeSubtask(Subtask subtask) {
+        if (subtasks.containsKey(subtask.getId())) {
+            subtasks.remove(subtask.getId());
+            return;
+        }
 
+        System.out.println("В эпике с ИД " + id + " не найдена подзадача с ИД " + subtask.getId());
     }
 
     @Override

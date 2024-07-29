@@ -82,9 +82,10 @@ public class TaskManager {
     }
 
     // d. Создание. Сам объект должен передаваться в качестве параметра [Subtask]
-    public Subtask createAndAddSubtask(Subtask subtask) {
+    public Subtask createAndAddSubtask(Subtask subtask, Epic epic) {
         subtask.setId(createAndGetNewId());
         subtasks.put(subtask.getId(), subtask);
+        epic.addSubtask(subtask);
         return subtask;
     }
 
@@ -92,6 +93,11 @@ public class TaskManager {
     public Epic createAndAddEpic(Epic epic) {
         epic.setId(createAndGetNewId());
         epics.put(epic.getId(), epic);
+
+        for (Subtask subtask : epic.getSubtasks().values()) {
+            subtasks.put(subtask.getId(), subtask);
+        }
+
         return epic;
     }
 
@@ -129,7 +135,14 @@ public class TaskManager {
     // f. Удаление по идентификатору [Subtask]
     public void removeSubtaskById(int id) {
         if (subtasks.containsKey(id)) {
+            Subtask subtask = subtasks.get(id);
+            Epic epic = subtask.getEpic();
             subtasks.remove(id);
+
+            if (epic != null) {
+                epic.removeSubtask(subtask);
+            }
+
             return;
         }
 
@@ -139,7 +152,13 @@ public class TaskManager {
     // f. Удаление по идентификатору [Epic]
     public void removeEpicById(int id) {
         if (epics.containsKey(id)) {
+            Epic epic = epics.get(id);
             epics.remove(id);
+
+            for (Subtask subtask : epic.getSubtasks().values()) {
+                subtasks.remove(subtask.getId());
+            }
+
             return;
         }
 
