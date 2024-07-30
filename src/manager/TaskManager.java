@@ -118,7 +118,9 @@ public class TaskManager {
 
     // e. Обновление. Новая версия объекта с верным идентификатором передаётся в виде параметра [Task]
     public void updateTask(Task task) {
-        tasks.put(task.getId(), task);
+        if (tasks.containsKey(task.getId())) {
+            tasks.put(task.getId(), task);
+        }
     }
 
     // e. Обновление. Новая версия объекта с верным идентификатором передаётся в виде параметра [Subtask]
