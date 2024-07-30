@@ -43,11 +43,17 @@ public class TaskManager {
     // b. Удаление всех задач [Subtask]
     public void removeAllSubtasks() {
         subtasks.clear();
+
+        for (Epic epic : epics.values()) {
+            epic.clearAllSubtasks();
+            updateEpic(epic);
+        }
     }
 
     // b. Удаление всех задач [Epic]
     public void removeAllEpics() {
         epics.clear();
+        subtasks.clear();
     }
 
     // c. Получение по идентификатору [Task]
