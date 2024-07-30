@@ -6,24 +6,25 @@ public class Main {
         TaskManager taskManager = new TaskManager();
 
         // Создайте две задачи, ...
-        Task task1 = taskManager.createAndAddTask(new Task("Задача 1", "Описание заадчи 1"));
-        Task task2 = taskManager.createAndAddTask(new Task("Задача 2", "Описание заадчи 2"));
+        Task task1 = taskManager.createAndAddTask(new Task("Задача 1", "Описание заадчи 1", TaskStatus.NEW));
+        Task task2 = taskManager.createAndAddTask(new Task("Задача 2", "Описание заадчи 2", TaskStatus.NEW));
 
         // ... а также эпик ...
-        Epic grandEpic = taskManager.createAndAddEpic(new Epic("Большой эпик", "Описание большого эпика"));
+        Epic grandEpic = taskManager
+                .createAndAddEpic(new Epic("Большой эпик", "Описание большого эпика", TaskStatus.NEW));
 
         // ... с двумя подзадачами ...
         Subtask subtask1OfGrandEpic = taskManager
-                .createAndAddSubtask(new Subtask("Позадача 1", "Описание подзадачи 1"), grandEpic);
+                .createAndAddSubtask(new Subtask("Позадача 1", "Описание 1", TaskStatus.NEW), grandEpic);
         Subtask subtask2OfGrandEpic = taskManager
-                .createAndAddSubtask(new Subtask("Позадача 2", "Описание подзадачи 2"), grandEpic);
+                .createAndAddSubtask(new Subtask("Позадача 2", "Описание 2", TaskStatus.NEW), grandEpic);
 
         // ... и  эпик ...
-        Epic epic = taskManager.createAndAddEpic(new Epic("Эпик", "Описание эпика"));
+        Epic epic = taskManager.createAndAddEpic(new Epic("Эпик", "Описание эпика", TaskStatus.NEW));
 
         // ... с одной подзадачей.
         Subtask subtask = taskManager
-                .createAndAddSubtask(new Subtask("Позадача эпика", "Описание подзадачи эпика"), epic);
+                .createAndAddSubtask(new Subtask("Позадача эпика", "Описание", TaskStatus.NEW), epic);
 
         // Распечатайте списки эпиков, задач и подзадач через System.out.println(..)
         System.out.println("Текущие спсики задач:");
