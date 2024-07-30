@@ -166,7 +166,7 @@ public class TaskManager {
     // f. Удаление по идентификатору [Subtask]
     public void removeSubtaskById(int id) {
         if (!subtasks.containsKey(id)) {
-            System.out.println("Подзадачи с ИД " + id + " не найдена для удаления");
+            System.out.println("Подзадачи с ИД " + id + " не найдены для удаления");
             return;
         }
 
@@ -180,7 +180,7 @@ public class TaskManager {
     // f. Удаление по идентификатору [Epic]
     public void removeEpicById(int id) {
         if (!epics.containsKey(id)) {
-            System.out.println("Эпика с ИД " + id + " не найден для удаления");
+            System.out.println("Эпик с ИД " + id + " не найден для удаления");
             return;
         }
 
@@ -193,8 +193,20 @@ public class TaskManager {
     }
 
     // 3 a. Получение списка всех подзадач определённого эпика
-    public HashMap<Integer, Subtask> getAllSubtasksInEpic(Epic epic) {
-        return epic.getSubtasks();
+    public ArrayList<Subtask> getAllSubtasksInEpic(int epicId) {
+        if (!epics.containsKey(epicId)) {
+            System.out.println("Эпик с ИД " + epicId + " не найден для получения списка подзадач");
+            return null;
+        }
+
+        ArrayList<Subtask> result = new ArrayList<>();
+        Epic epic = epics.get(epicId);
+
+        for (int subtaskId : epic.getAllSubtaskIds()) {
+            result.add(subtasks.get(subtaskId));
+        }
+
+        return result;
     }
 
     private int createAndGetNewTaskId() {
