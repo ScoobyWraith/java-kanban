@@ -125,12 +125,19 @@ public class TaskManager {
 
     // e. Обновление. Новая версия объекта с верным идентификатором передаётся в виде параметра [Subtask]
     public void updateSubtask(Subtask subtask) {
-        subtasks.put(subtask.getId(), subtask);
-        Epic epic = subtask.getEpic();
-
-        if (epic != null) {
-            updateEpicStatus(epic);
+        if (!subtasks.containsKey(subtask.getId())) {
+            return;
         }
+
+        Subtask oldSubtask = subtasks.get(subtask.getId());
+
+        if (oldSubtask.getEpicId() != subtask.getEpicId()) {
+            return;
+        }
+
+        subtasks.put(subtask.getId(), subtask);
+        Epic epic = epics.get(subtask.getEpicId());
+        updateEpic(epic);
     }
 
     // e. Обновление. Новая версия объекта с верным идентификатором передаётся в виде параметра [Epic]
