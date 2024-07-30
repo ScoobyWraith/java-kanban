@@ -1,40 +1,43 @@
 package model;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 
 public class Epic extends Task {
-    private final HashMap<Integer, Subtask> subtasks;
+    private final ArrayList<Integer> subtaskIds;
 
     public Epic(String title, String description, TaskStatus status) {
         super(title, description, status);
-        subtasks = new HashMap<>();
+        subtaskIds = new ArrayList<>();
     }
 
-    public HashMap<Integer, Subtask> getSubtasks() {
-        return new HashMap<>(subtasks);
+    public ArrayList<Integer> getAllSubtaskIds() {
+        return new ArrayList<>(subtaskIds);
     }
 
-    public void addSubtask(Subtask subtask) {
-        subtasks.put(subtask.getId(), subtask);
-    }
-
-    public void removeSubtask(Subtask subtask) {
-        if (subtasks.containsKey(subtask.getId())) {
-            subtasks.remove(subtask.getId());
+    public void addSubtaskId(int id) {
+        if (subtaskIds.contains(id)) {
             return;
         }
 
-        System.out.println("В эпике с ИД " + id + " не найдена подзадача с ИД " + subtask.getId());
+        subtaskIds.add(id);
     }
 
-    public void clearAllSubtasks() {
-        this.subtasks.clear();
+    public void removeSubtaskId(int id) {
+        if (!subtaskIds.contains(id)) {
+            return;
+        }
+
+        subtaskIds.remove(id);
+    }
+
+    public void clearAllSubtaskIds() {
+        subtaskIds.clear();
     }
 
     @Override
     public String toString() {
         return "Epic{" +
-                "subtasks.size=" + subtasks.size() +
+                "subtasks.size=" + subtaskIds.size() +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", id=" + id +

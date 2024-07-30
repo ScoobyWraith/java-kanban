@@ -45,7 +45,7 @@ public class TaskManager {
         subtasks.clear();
 
         for (Epic epic : epics.values()) {
-            epic.clearAllSubtasks();
+            epic.clearAllSubtaskIds();
             updateEpic(epic);
         }
     }
@@ -103,7 +103,7 @@ public class TaskManager {
         subtask.setId(createAndGetNewTaskId());
         subtasks.put(subtask.getId(), subtask);
         Epic epic = epics.get(subtask.getEpicId());
-        epic.addSubtask(subtask);
+        epic.addSubtaskId(subtask.getId());
         updateEpicStatus(epic);
         return subtask;
     }
