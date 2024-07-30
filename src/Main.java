@@ -10,25 +10,25 @@ public class Main {
         TaskManager taskManager = new TaskManager();
 
         // Создайте две задачи, ...
-        Task task1 = taskManager.createAndAddTask(new Task("Задача 1", "Описание заадчи 1", TaskStatus.NEW));
-        Task task2 = taskManager.createAndAddTask(new Task("Задача 2", "Описание заадчи 2", TaskStatus.NEW));
+        Task task1 = taskManager.createAndAddTask(new Task("Задача 1", "Описание", TaskStatus.NEW));
+        Task task2 = taskManager.createAndAddTask(new Task("Задача 2", "Описание", TaskStatus.NEW));
 
         // ... а также эпик ...
         Epic grandEpic = taskManager
-                .createAndAddEpic(new Epic("Большой эпик", "Описание большого эпика", TaskStatus.NEW));
+                .createAndAddEpic(new Epic("Большой эпик", "Описание"));
 
         // ... с двумя подзадачами ...
         Subtask subtask1OfGrandEpic = taskManager
-                .createAndAddSubtask(new Subtask("Позадача 1", "Описание 1", TaskStatus.NEW, grandEpic.getId()), grandEpic);
+                .createAndAddSubtask(new Subtask("Позадача 1", "Описание", TaskStatus.NEW, grandEpic.getId()));
         Subtask subtask2OfGrandEpic = taskManager
-                .createAndAddSubtask(new Subtask("Позадача 2", "Описание 2", TaskStatus.NEW, grandEpic.getId()), grandEpic);
+                .createAndAddSubtask(new Subtask("Позадача 2", "Описание", TaskStatus.NEW, grandEpic.getId()));
 
         // ... и  эпик ...
-        Epic epic = taskManager.createAndAddEpic(new Epic("Эпик", "Описание эпика", TaskStatus.NEW));
+        Epic epic = taskManager.createAndAddEpic(new Epic("Эпик", "Описание эпика"));
 
         // ... с одной подзадачей.
         Subtask subtask = taskManager
-                .createAndAddSubtask(new Subtask("Позадача эпика", "Описание", TaskStatus.NEW, epic.getId()), epic);
+                .createAndAddSubtask(new Subtask("Позадача эпика", "Описание", TaskStatus.NEW, epic.getId()));
 
         // Распечатайте списки эпиков, задач и подзадач через System.out.println(..)
         System.out.println("Текущие спсики задач:");
@@ -73,7 +73,5 @@ public class Main {
         System.out.println(taskManager.getAllEpics());
         System.out.println(taskManager.getAllTasks());
         System.out.println(taskManager.getAllSubtasks());
-
-
     }
 }
