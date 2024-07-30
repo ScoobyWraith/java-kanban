@@ -15,16 +15,16 @@ public class Main {
 
         // ... с двумя подзадачами ...
         Subtask subtask1OfGrandEpic = taskManager
-                .createAndAddSubtask(new Subtask("Позадача 1", "Описание 1", TaskStatus.NEW), grandEpic);
+                .createAndAddSubtask(new Subtask("Позадача 1", "Описание 1", TaskStatus.NEW, grandEpic.getId()), grandEpic);
         Subtask subtask2OfGrandEpic = taskManager
-                .createAndAddSubtask(new Subtask("Позадача 2", "Описание 2", TaskStatus.NEW), grandEpic);
+                .createAndAddSubtask(new Subtask("Позадача 2", "Описание 2", TaskStatus.NEW, grandEpic.getId()), grandEpic);
 
         // ... и  эпик ...
         Epic epic = taskManager.createAndAddEpic(new Epic("Эпик", "Описание эпика", TaskStatus.NEW));
 
         // ... с одной подзадачей.
         Subtask subtask = taskManager
-                .createAndAddSubtask(new Subtask("Позадача эпика", "Описание", TaskStatus.NEW), epic);
+                .createAndAddSubtask(new Subtask("Позадача эпика", "Описание", TaskStatus.NEW, epic.getId()), epic);
 
         // Распечатайте списки эпиков, задач и подзадач через System.out.println(..)
         System.out.println("Текущие спсики задач:");
