@@ -104,7 +104,7 @@ public class TaskManager {
         subtasks.put(subtask.getId(), subtask);
         Epic epic = epics.get(subtask.getEpicId());
         epic.addSubtaskId(subtask.getId());
-        updateEpicStatus(epic);
+        updateEpicStatus(epic.getId());
         return subtask;
     }
 
@@ -112,7 +112,7 @@ public class TaskManager {
     public Epic createAndAddEpic(Epic epic) {
         epic.setId(createAndGetNewTaskId());
         epics.put(epic.getId(), epic);
-        updateEpicStatus(epic);
+        updateEpicStatus(epic.getId());
         return epic;
     }
 
@@ -174,7 +174,7 @@ public class TaskManager {
         subtasks.remove(id);
         Epic epic = epics.get(subtask.getEpicId());
         epic.removeSubtaskId(id);
-        updateEpicStatus(epic);
+        updateEpicStatus(epic.getId());
     }
 
     // f. Удаление по идентификатору [Epic]
