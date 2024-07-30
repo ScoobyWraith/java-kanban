@@ -118,9 +118,11 @@ public class TaskManager {
 
     // e. Обновление. Новая версия объекта с верным идентификатором передаётся в виде параметра [Task]
     public void updateTask(Task task) {
-        if (tasks.containsKey(task.getId())) {
-            tasks.put(task.getId(), task);
+        if (!tasks.containsKey(task.getId())) {
+            return;
         }
+
+        tasks.put(task.getId(), task);
     }
 
     // e. Обновление. Новая версия объекта с верным идентификатором передаётся в виде параметра [Subtask]
@@ -129,9 +131,9 @@ public class TaskManager {
             return;
         }
 
-        Subtask oldSubtask = subtasks.get(subtask.getId());
+        Subtask existedSubtask = subtasks.get(subtask.getId());
 
-        if (oldSubtask.getEpicId() != subtask.getEpicId()) {
+        if (existedSubtask.getEpicId() != subtask.getEpicId()) {
             return;
         }
 
@@ -142,8 +144,13 @@ public class TaskManager {
 
     // e. Обновление. Новая версия объекта с верным идентификатором передаётся в виде параметра [Epic]
     public void updateEpic(Epic epic) {
-        epics.put(epic.getId(), epic);
-        updateEpicStatus(epic);
+        if (!epics.containsKey(epic.getId())) {
+            return;
+        }
+
+        Epic existedEpic = epics.get(epic.getId());
+        existedEpic.setTitle(epic.getTitle());
+        existedEpic.setDescription(epic.getDescription());
     }
 
     // f. Удаление по идентификатору [Task]
