@@ -94,10 +94,15 @@ public class TaskManager {
     }
 
     // d. Создание. Сам объект должен передаваться в качестве параметра [Subtask]
-    public Subtask createAndAddSubtask(Subtask subtask, Epic epic) {
+    public Subtask createAndAddSubtask(Subtask subtask) {
+        if (!epics.containsKey(subtask.getEpicId())) {
+            System.out.println("Нельзя создать подзадачу для незарегистрированного эпика с ИД " + subtask.getEpicId());
+            return null;
+        }
+
         subtask.setId(createAndGetNewTaskId());
-        subtask.setEpic(epic);
         subtasks.put(subtask.getId(), subtask);
+        Epic epic = epics.get(subtask.getEpicId());
         epic.addSubtask(subtask);
         updateEpicStatus(epic);
         return subtask;
