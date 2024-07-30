@@ -11,7 +11,7 @@ public class Epic extends Task {
     }
 
     public HashMap<Integer, Subtask> getSubtasks() {
-        return subtasks;
+        return new HashMap<>(subtasks);
     }
 
     public void addSubtask(Subtask subtask) {
@@ -25,6 +25,10 @@ public class Epic extends Task {
         }
 
         System.out.println("В эпике с ИД " + id + " не найдена подзадача с ИД " + subtask.getId());
+    }
+
+    public void clearAllSubtasks() {
+        this.subtasks.clear();
     }
 
     @Override
