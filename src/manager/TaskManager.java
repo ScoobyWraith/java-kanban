@@ -5,6 +5,7 @@ import model.Subtask;
 import model.Task;
 import model.TaskStatus;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class TaskManager {
@@ -20,18 +21,18 @@ public class TaskManager {
     }
 
     // a. Получение списка всех задач [Task]
-    public HashMap<Integer, Task> getAllTasks() {
-        return tasks;
+    public ArrayList<Task> getAllTasks() {
+        return new ArrayList<>(tasks.values());
     }
 
     // a. Получение списка всех задач [Subtask]
-    public HashMap<Integer, Subtask> getAllSubtasks() {
-        return subtasks;
+    public ArrayList<Subtask> getAllSubtasks() {
+        return new ArrayList<>(subtasks.values());
     }
 
     // a. Получение списка всех задач [Epic]
-    public HashMap<Integer, Epic> getAllEpics() {
-        return epics;
+    public ArrayList<Epic> getAllEpics() {
+        return new ArrayList<>(epics.values());
     }
 
     // b. Удаление всех задач [Task]
