@@ -8,7 +8,7 @@ import model.TaskStatus;
 import java.util.HashMap;
 
 public class TaskManager {
-    private static int idCounter = 0;
+    private int idCounter = 0;
     private final HashMap<Integer, Task> tasks;
     private final HashMap<Integer, Subtask> subtasks;
     private final HashMap<Integer, Epic> epics;
@@ -81,14 +81,14 @@ public class TaskManager {
 
     // d. Создание. Сам объект должен передаваться в качестве параметра [Task]
     public Task createAndAddTask(Task task) {
-        task.setId(createAndGetNewId());
+        task.setId(createAndGetNewTaskId());
         tasks.put(task.getId(), task);
         return task;
     }
 
     // d. Создание. Сам объект должен передаваться в качестве параметра [Subtask]
     public Subtask createAndAddSubtask(Subtask subtask, Epic epic) {
-        subtask.setId(createAndGetNewId());
+        subtask.setId(createAndGetNewTaskId());
         subtask.setEpic(epic);
         subtasks.put(subtask.getId(), subtask);
         epic.addSubtask(subtask);
@@ -98,7 +98,7 @@ public class TaskManager {
 
     // d. Создание. Сам объект должен передаваться в качестве параметра [Subtask]
     public Epic createAndAddEpic(Epic epic) {
-        epic.setId(createAndGetNewId());
+        epic.setId(createAndGetNewTaskId());
         epics.put(epic.getId(), epic);
 
         for (Subtask subtask : epic.getSubtasks().values()) {
@@ -179,7 +179,7 @@ public class TaskManager {
         return epic.getSubtasks();
     }
 
-    private static int createAndGetNewId() {
+    private int createAndGetNewTaskId() {
         return ++idCounter;
     }
 
