@@ -5,6 +5,7 @@ import model.Subtask;
 import model.Task;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface TaskManager {
     // a. Получение списка всех задач [Task]
@@ -63,4 +64,7 @@ public interface TaskManager {
 
     // 3 a. Получение списка всех подзадач определённого эпика
     ArrayList<Subtask> getAllSubtasksInEpic(int epicId);
+
+    // Получить список из последних просмотренных задач
+    List<Task> getHistory();
 }

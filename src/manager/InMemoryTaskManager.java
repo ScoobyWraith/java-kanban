@@ -7,17 +7,20 @@ import model.TaskStatus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
     private final HashMap<Integer, Task> tasks;
     private final HashMap<Integer, Subtask> subtasks;
     private final HashMap<Integer, Epic> epics;
     private int idCounter = 0;
+    private final HistoryManager historyManager;
 
     public InMemoryTaskManager() {
         this.tasks = new HashMap<>();
         this.subtasks = new HashMap<>();
         this.epics = new HashMap<>();
+        historyManager = Managers.getDefaultHistory();
     }
 
     // a. Получение списка всех задач [Task]
@@ -66,10 +69,11 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Task getTaskById(int id) {
         if (tasks.containsKey(id)) {
-            return tasks.get(id);
+            Task task = tasks.get(id);
+            historyManager.add(task);
+            return task;
         }
 
-        System.out.println("Задачи с ИД " + id + " не найдено");
         return null;
     }
 
@@ -77,10 +81,11 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Subtask getSubtaskById(int id) {
         if (subtasks.containsKey(id)) {
-            return subtasks.get(id);
+            Subtask subtask = subtasks.get(id);
+            historyManager.add(subtask);
+            return subtask;
         }
 
-        System.out.println("Позадачи с ИД " + id + " не найдено");
         return null;
     }
 
@@ -88,10 +93,11 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Epic getEpicById(int id) {
         if (epics.containsKey(id)) {
-            return epics.get(id);
+            Epic epic = epics.get(id);
+            historyManager.add(epic);
+            return epic;
         }
 
-        System.out.println("Эпика с ИД " + id + " не найдено");
         return null;
     }
 
@@ -226,6 +232,11 @@ public class InMemoryTaskManager implements TaskManager {
         }
 
         return result;
+    }
+
+    @Override
+    public List<Task> getHistory() {
+        return historyManager.getHistory();
     }
 
     private int createAndGetNewTaskId() {

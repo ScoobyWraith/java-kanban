@@ -1,4 +1,4 @@
-import manager.InMemoryTaskManager;
+import manager.Managers;
 import manager.TaskManager;
 import model.Epic;
 import model.Subtask;
@@ -8,7 +8,7 @@ import model.TaskStatus;
 public class Main {
 
     public static void main(String[] args) {
-        TaskManager taskManager = new InMemoryTaskManager();
+        TaskManager taskManager = Managers.getDefault();
 
         // Создайте две задачи, ...
         Task task1 = taskManager.createAndAddTask(new Task("Задача 1", "Описание", TaskStatus.NEW));
@@ -20,19 +20,19 @@ public class Main {
 
         // ... с двумя подзадачами ...
         Subtask subtask1OfGrandEpic = taskManager
-                .createAndAddSubtask(new Subtask("Позадача 1", "Описание", TaskStatus.NEW, grandEpic.getId()));
+                .createAndAddSubtask(new Subtask("Подзадача 1", "Описание", TaskStatus.NEW, grandEpic.getId()));
         Subtask subtask2OfGrandEpic = taskManager
-                .createAndAddSubtask(new Subtask("Позадача 2", "Описание", TaskStatus.NEW, grandEpic.getId()));
+                .createAndAddSubtask(new Subtask("Подзадача 2", "Описание", TaskStatus.NEW, grandEpic.getId()));
 
         // ... и  эпик ...
         Epic epic = taskManager.createAndAddEpic(new Epic("Эпик", "Описание эпика"));
 
         // ... с одной подзадачей.
         Subtask subtask = taskManager
-                .createAndAddSubtask(new Subtask("Позадача эпика", "Описание", TaskStatus.NEW, epic.getId()));
+                .createAndAddSubtask(new Subtask("Подзадача эпика", "Описание", TaskStatus.NEW, epic.getId()));
 
         // Распечатайте списки эпиков, задач и подзадач через System.out.println(..)
-        System.out.println("Текущие спсики задач:");
+        System.out.println("Текущие списки задач:");
         System.out.println(taskManager.getAllEpics());
         System.out.println(taskManager.getAllTasks());
         System.out.println(taskManager.getAllSubtasks());
@@ -64,6 +64,13 @@ public class Main {
         System.out.println(taskManager.getAllEpics());
         System.out.println(taskManager.getAllTasks());
         System.out.println(taskManager.getAllSubtasks());
+
+        // Вывести историю просмотра задач
+        System.out.println("История просмотра задач:");
+        taskManager.getTaskById(task1.getId());
+        taskManager.getSubtaskById(subtask.getId());
+        taskManager.getEpicById(epic.getId());
+        System.out.println(taskManager.getHistory());
 
         // И, наконец, попробуйте удалить одну из задач и один из эпиков
         taskManager.removeTaskById(task1.getId());
