@@ -1,3 +1,4 @@
+import manager.InMemoryTaskManager;
 import manager.TaskManager;
 import model.Epic;
 import model.Subtask;
@@ -7,7 +8,7 @@ import model.TaskStatus;
 public class Main {
 
     public static void main(String[] args) {
-        TaskManager taskManager = new TaskManager();
+        TaskManager taskManager = new InMemoryTaskManager();
 
         // Создайте две задачи, ...
         Task task1 = taskManager.createAndAddTask(new Task("Задача 1", "Описание", TaskStatus.NEW));
