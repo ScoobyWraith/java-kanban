@@ -8,8 +8,25 @@ public class Subtask extends Task {
         this.epicId = epicId;
     }
 
+    public Subtask(Subtask task) {
+        super(task.title, task.description, task.status);
+        this.id = task.id;
+        this.epicId = task.epicId;
+    }
+
+    @Override
+    public void setId(int id) {
+        if (id != epicId) {
+            super.setId(id);
+        }
+    }
+
     public int getEpicId() {
         return epicId;
+    }
+
+    public Subtask getCopy() {
+        return new Subtask(this);
     }
 
     @Override

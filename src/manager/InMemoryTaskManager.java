@@ -104,6 +104,7 @@ public class InMemoryTaskManager implements TaskManager {
     // d. Создание. Сам объект должен передаваться в качестве параметра [Task]
     @Override
     public Task createAndAddTask(Task task) {
+        task = new Task(task);
         task.setId(createAndGetNewTaskId());
         tasks.put(task.getId(), task);
         return task;
@@ -113,10 +114,10 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Subtask createAndAddSubtask(Subtask subtask) {
         if (!epics.containsKey(subtask.getEpicId())) {
-            System.out.println("Нельзя создать подзадачу для незарегистрированного эпика с ИД " + subtask.getEpicId());
             return null;
         }
 
+        subtask = new Subtask(subtask);
         subtask.setId(createAndGetNewTaskId());
         subtasks.put(subtask.getId(), subtask);
         Epic epic = epics.get(subtask.getEpicId());
@@ -128,6 +129,7 @@ public class InMemoryTaskManager implements TaskManager {
     // d. Создание. Сам объект должен передаваться в качестве параметра [Subtask]
     @Override
     public Epic createAndAddEpic(Epic epic) {
+        epic = new Epic(epic);
         epic.setId(createAndGetNewTaskId());
         epics.put(epic.getId(), epic);
         updateEpicStatus(epic.getId());

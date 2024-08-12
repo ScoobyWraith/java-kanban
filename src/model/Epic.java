@@ -10,12 +10,18 @@ public class Epic extends Task {
         subtaskIds = new ArrayList<>();
     }
 
+    public Epic(Epic epic) {
+        super(epic.title, epic.description, epic.status);
+        this.id = epic.id;
+        subtaskIds = new ArrayList<>(epic.subtaskIds);
+    }
+
     public ArrayList<Integer> getAllSubtaskIds() {
         return new ArrayList<>(subtaskIds);
     }
 
     public void addSubtaskId(int id) {
-        if (subtaskIds.contains(id)) {
+        if (subtaskIds.contains(id) || id == this.id) {
             return;
         }
 
@@ -32,6 +38,10 @@ public class Epic extends Task {
 
     public void clearAllSubtaskIds() {
         subtaskIds.clear();
+    }
+
+    public Epic getCopy() {
+        return new Epic(this);
     }
 
     @Override

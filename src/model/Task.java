@@ -14,6 +14,13 @@ public class Task {
         this.status = status;
     }
 
+    public Task(Task task) {
+        this.id = task.id;
+        this.title = task.title;
+        this.description = task.description;
+        this.status = task.status;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -44,6 +51,10 @@ public class Task {
 
     public void setStatus(TaskStatus status) {
         this.status = status;
+    }
+
+    public Task getCopy() {
+        return new Task(this);
     }
 
     @Override
