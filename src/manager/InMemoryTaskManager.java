@@ -8,11 +8,12 @@ import model.TaskStatus;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class InMemoryTaskManager implements TaskManager {
-    private final HashMap<Integer, Task> tasks;
-    private final HashMap<Integer, Subtask> subtasks;
-    private final HashMap<Integer, Epic> epics;
+    private final Map<Integer, Task> tasks;
+    private final Map<Integer, Subtask> subtasks;
+    private final Map<Integer, Epic> epics;
     private int idCounter = 0;
     private final HistoryManager historyManager;
 
@@ -25,19 +26,19 @@ public class InMemoryTaskManager implements TaskManager {
 
     // a. Получение списка всех задач [Task]
     @Override
-    public ArrayList<Task> getAllTasks() {
+    public List<Task> getAllTasks() {
         return new ArrayList<>(tasks.values());
     }
 
     // a. Получение списка всех задач [Subtask]
     @Override
-    public ArrayList<Subtask> getAllSubtasks() {
+    public List<Subtask> getAllSubtasks() {
         return new ArrayList<>(subtasks.values());
     }
 
     // a. Получение списка всех задач [Epic]
     @Override
-    public ArrayList<Epic> getAllEpics() {
+    public List<Epic> getAllEpics() {
         return new ArrayList<>(epics.values());
     }
 
@@ -220,7 +221,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     // 3 a. Получение списка всех подзадач определённого эпика
     @Override
-    public ArrayList<Subtask> getAllSubtasksInEpic(int epicId) {
+    public List<Subtask> getAllSubtasksInEpic(int epicId) {
         if (!epics.containsKey(epicId)) {
             System.out.println("Эпик с ИД " + epicId + " не найден для получения списка подзадач");
             return null;
@@ -251,7 +252,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
 
         Epic epic = epics.get(epicId);
-        ArrayList<Integer> subtaskIds = epic.getAllSubtaskIds();
+        List<Integer> subtaskIds = epic.getAllSubtaskIds();
 
         if (subtaskIds.isEmpty()) {
             epic.setStatus(TaskStatus.NEW);

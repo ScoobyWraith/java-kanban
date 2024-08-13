@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
+import java.util.List;
 
 class InMemoryTaskManagerTest {
     private TaskManager taskManager;
@@ -26,7 +26,7 @@ class InMemoryTaskManagerTest {
         Assertions.assertNotNull(savedTask, "Задача не сохранилась");
         Assertions.assertEquals(createdTask, savedTask, "Созданная и сохраненная задачи не совпадают");
 
-        ArrayList<Task> tasks = taskManager.getAllTasks();
+        List<Task> tasks = taskManager.getAllTasks();
 
         Assertions.assertNotNull(tasks, "Список задач не возвращается");
         Assertions.assertEquals(1, tasks.size(), "Неверное количество задач в списке");
@@ -47,7 +47,7 @@ class InMemoryTaskManagerTest {
         Assertions.assertNotNull(savedSubtask, "Подзадача не сохранилась");
         Assertions.assertEquals(createdSubtask, savedSubtask, "Созданная и сохраненная подзадачи не совпадают");
 
-        ArrayList<Subtask> tasks = taskManager.getAllSubtasks();
+        List<Subtask> tasks = taskManager.getAllSubtasks();
 
         Assertions.assertNotNull(tasks, "Список подзадач не возвращается");
         Assertions.assertEquals(1, tasks.size(), "Неверное количество подззадач в списке");
@@ -71,7 +71,7 @@ class InMemoryTaskManagerTest {
         Assertions.assertNotNull(savedEpic, "Эпик не сохранился");
         Assertions.assertEquals(createdEpic, savedEpic, "Созданный и сохраненный эпики не совпадают");
 
-        ArrayList<Epic> tasks = taskManager.getAllEpics();
+        List<Epic> tasks = taskManager.getAllEpics();
 
         Assertions.assertNotNull(tasks, "Список эпиков не возвращается");
         Assertions.assertEquals(1, tasks.size(), "Неверное количество эпиков в списке");
@@ -84,12 +84,12 @@ class InMemoryTaskManagerTest {
         final Subtask subtask1 = taskManager
                 .createAndAddSubtask(new Subtask("a", "b", TaskStatus.NEW, createdEpic.getId()));
         final Subtask subtask2 = taskManager.createAndAddSubtask(subtask1);
-        ArrayList<Subtask> subtasksOfEpic = taskManager.getAllSubtasksInEpic(createdEpic.getId());
+        List<Subtask> subtasksOfEpic = taskManager.getAllSubtasksInEpic(createdEpic.getId());
 
         Assertions.assertTrue(subtasksOfEpic.contains(subtask1), "Нет первой подзадачи у эпика");
         Assertions.assertTrue(subtasksOfEpic.contains(subtask2), "Нет второй подзадачи у эпика");
 
-        ArrayList<Subtask> subtasksOfRepeatedEpic = taskManager.getAllSubtasksInEpic(repeatedEpic.getId());
+        List<Subtask> subtasksOfRepeatedEpic = taskManager.getAllSubtasksInEpic(repeatedEpic.getId());
 
         Assertions.assertEquals(subtasksOfRepeatedEpic.size(), 0, "Подзадачи добавились не тому эпику");
     }
