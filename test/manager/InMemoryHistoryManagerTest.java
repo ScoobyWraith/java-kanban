@@ -12,87 +12,114 @@ import java.util.List;
 
 class InMemoryHistoryManagerTest {
     private HistoryManager historyManager;
+    private TaskManager taskManager;
 
     @BeforeEach
     public void beforeEach() {
         historyManager = new InMemoryHistoryManager();
+        taskManager = Managers.getDefault();
     }
 
     @Test
     public void oldVersionOfTasksInHistory() {
-        TaskManager taskManager = Managers.getDefault();
         final Task task = taskManager.createAndAddTask(new Task("a", "b", TaskStatus.NEW));
         final Epic epic = taskManager.createAndAddEpic(new Epic("a", "b"));
         final Subtask subtask
                 = taskManager.createAndAddSubtask(new Subtask("a", "b", TaskStatus.NEW, epic.getId()));
 
-        // row 0
+        // 0 - task,
         historyManager.add(task);
-        // row 1
+        // 0 - task, 1 - epic
         historyManager.add(epic);
-        // row 2
+        // 0 - task, 1 - epic, 2 - subtask
         historyManager.add(subtask);
 
         subtask.setDescription("New description of subtask");
-        // row 3
+        // 0 - task, 1 - epic, 2 - subtask
         historyManager.add(subtask);
 
         epic.setTitle("New title of epic");
-        // row 4
+        // 0 - task, 1 - subtask, 2 - epic
         historyManager.add(epic);
 
         task.setStatus(TaskStatus.DONE);
-        // row 5
+        // 0 - subtask, 1 - epic, 2 - task
         historyManager.add(task);
 
         List<Task> history = historyManager.getHistory();
 
-        Assertions.assertEquals(history.get(0).getStatus(), TaskStatus.NEW, "В истории неверный статус задачи");
-        Assertions.assertEquals(history.get(1).getTitle(), "a", "В истории неверное название эпика");
         Assertions.assertEquals(
-                history.get(2).getDescription(),
-                "b",
-                "В истории неверное описание подзадачи"
+                subtask.getId(),
+                history.get(0).getId(),
+                "Неверный порядок истории для 1го элемента"
         );
         Assertions.assertEquals(
-                history.get(3).getDescription(),
-                "New description of subtask",
-                "В истории неверное описание подзадачи после обновления"
+                epic.getId(),
+                history.get(1).getId(),
+                "Неверный порядок истории для 2го элемента"
         );
         Assertions.assertEquals(
-                history.get(4).getTitle(),
+                task.getId(),
+                history.get(2).getId(),
+                "Неверный порядок истории для 3го элемента"
+        );
+        Assertions.assertEquals(
+                TaskStatus.NEW,
+                history.get(0).getStatus(),
+                "В истории неверный статус подзадачи"
+        );
+        Assertions.assertEquals(
                 "New title of epic",
+                history.get(1).getTitle(),
                 "В истории неверное название эпика после обновления"
         );
         Assertions.assertEquals(
-                history.get(5).getStatus(),
+                "New description of subtask",
+                history.get(0).getDescription(),
+                "В истории неверное описание подзадачи после обновления"
+        );
+        Assertions.assertEquals(
                 TaskStatus.DONE,
+                history.get(2).getStatus(),
                 "В истории неверный статус задачи после обновления"
         );
     }
 
     @Test
-    public void addTasksOverSize() {
-        final int maxSize = 10;
-        final int testSize = maxSize + 5;
+    public void checkRepeatsRemoving() {
+        final Task task = taskManager.createAndAddTask(new Task("a", "b", TaskStatus.NEW));
+        final Epic epic = taskManager.createAndAddEpic(new Epic("a", "b"));
+        final Subtask subtask
+                = taskManager.createAndAddSubtask(new Subtask("a", "b", TaskStatus.NEW, epic.getId()));
 
-        for (int i = 0; i < testSize; i++) {
-            Task task = new Task(String.valueOf(i), "b", TaskStatus.NEW);
-            historyManager.add(task);
-        }
+        historyManager.add(task);
+        historyManager.add(epic);
+        historyManager.add(subtask);
+        epic.setTitle("New title");
+        historyManager.add(epic);
 
         List<Task> history = historyManager.getHistory();
 
-        Assertions.assertEquals(history.size(), maxSize, "Неправильный размер истории после переполнения");
-        Assertions.assertEquals(
-                history.get(0).getTitle(),
-                String.valueOf(testSize - maxSize),
-                "Неправильный сдвиг в истории для первого элемента"
-        );
-        Assertions.assertEquals(
-                history.get(maxSize - 1).getTitle(),
-                String.valueOf(testSize - 1),
-                "Неправильный сдвиг в истории для последнего элемента"
-        );
+        Assertions.assertEquals(3, history.size(), "В истории не были удалены повторы");
+    }
+
+    @Test
+    public void checkManualRemovingOfTasks() {
+        final Task task = taskManager.createAndAddTask(new Task("a", "b", TaskStatus.NEW));
+        final Epic epic = taskManager.createAndAddEpic(new Epic("a", "b"));
+        final Subtask subtask
+                = taskManager.createAndAddSubtask(new Subtask("a", "b", TaskStatus.NEW, epic.getId()));
+
+        historyManager.add(task);
+        historyManager.add(epic);
+        historyManager.add(subtask);
+
+        historyManager.remove(task.getId());
+        historyManager.remove(subtask.getId());
+
+        List<Task> history = historyManager.getHistory();
+
+        Assertions.assertEquals(1, history.size(), "Задачи из истории не были удалены");
+        Assertions.assertEquals(epic.getId(), history.get(0).getId(), "Из истории были удалены не те задачи");
     }
 }
