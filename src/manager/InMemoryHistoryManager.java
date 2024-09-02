@@ -69,6 +69,10 @@ public class InMemoryHistoryManager implements HistoryManager {
             prev.next = next;
         } else {
             head = next;
+
+            if (head != null) {
+                head.prev = null;
+            }
         }
 
         // if next is exists => node is not the tail, else: node is the tail
@@ -76,6 +80,10 @@ public class InMemoryHistoryManager implements HistoryManager {
             next.prev = prev;
         } else {
             tail = prev;
+
+            if (tail != null) {
+                tail.next = null;
+            }
         }
     }
 
