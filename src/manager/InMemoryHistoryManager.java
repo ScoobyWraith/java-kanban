@@ -33,12 +33,11 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void remove(int id) {
-        if (!taskPositionsInNodeList.containsKey(id)) {
-            return;
+        if (taskPositionsInNodeList.containsKey(id)) {
+            Node<Task> node = taskPositionsInNodeList.get(id);
+            removeNode(node);
+            taskPositionsInNodeList.remove(id);
         }
-
-        Node<Task> node = taskPositionsInNodeList.get(id);
-        removeNode(node);
     }
 
     private void linkLast(Task task) {
