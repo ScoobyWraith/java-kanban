@@ -155,4 +155,41 @@ class InMemoryTaskManagerTest {
 
         Assertions.assertEquals(taskManager.getAllTasks().size(), 0, "Список задач не пуст");
     }
+
+    @Test
+    public void addTasksInHistoryOverGettingFromManager() {
+        final Task task = taskManager.createAndAddTask(new Task("a", "b", TaskStatus.NEW));
+        final Epic epic = taskManager.createAndAddEpic(new Epic("a", "b"));
+        final Subtask subtask
+                = taskManager.createAndAddSubtask(new Subtask("a", "b", TaskStatus.NEW, epic.getId()));
+
+        taskManager.getTaskById(task.getId());
+        taskManager.getEpicById(epic.getId());
+        taskManager.getSubtaskById(subtask.getId());
+
+        List<Task> history = taskManager.getHistory();
+
+        Assertions.assertEquals(3, history.size(), "Неверный размер истории в менеджере задач");
+    }
+
+    @Test
+    public void removeTasksFromHistoryOverTaskManager() {
+        final Task task = taskManager.createAndAddTask(new Task("a", "b", TaskStatus.NEW));
+        final Epic epic = taskManager.createAndAddEpic(new Epic("a", "b"));
+        final Subtask subtask
+                = taskManager.createAndAddSubtask(new Subtask("a", "b", TaskStatus.NEW, epic.getId()));
+
+        taskManager.getTaskById(task.getId());
+        taskManager.getEpicById(epic.getId());
+        taskManager.getSubtaskById(subtask.getId());
+        taskManager.removeEpicById(epic.getId());
+
+        List<Task> history = taskManager.getHistory();
+
+        Assertions.assertEquals(
+                1,
+                history.size(),
+                "Неверный размер истории в менеджере задач после удаления эпика и связанной подзадачи"
+        );
+    }
 }
