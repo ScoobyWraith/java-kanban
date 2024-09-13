@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Epic extends Task {
+    TaskType type = TaskType.EPIC;
     private final List<Integer> subtaskIds;
 
     public Epic(String title, String description) {
@@ -39,6 +40,10 @@ public class Epic extends Task {
 
     public void clearAllSubtaskIds() {
         subtaskIds.clear();
+    }
+
+    public TaskType getType() {
+        return type;
     }
 
     public Epic getCopy() {

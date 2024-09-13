@@ -3,6 +3,7 @@ package model;
 import java.util.Objects;
 
 public class Task {
+    protected final TaskType type = TaskType.TASK;
     protected String title;
     protected String description;
     protected int id;
@@ -37,7 +38,7 @@ public class Task {
         this.description = description;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -51,6 +52,10 @@ public class Task {
 
     public void setStatus(TaskStatus status) {
         this.status = status;
+    }
+
+    public TaskType getType() {
+        return type;
     }
 
     public Task getCopy() {
