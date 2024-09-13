@@ -38,15 +38,23 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             createDataFile(file);
         }
 
+        int maxId = 0;
         FileBackedTaskManager manager = new FileBackedTaskManager(file);
         // Don't change file with data while creating new tasks over manager
         manager.setAvailableSave(false);
 
         try (BufferedReader br = new BufferedReader(new FileReader(file, charset))) {
             while (br.ready()) {
-                String row = br.readLine();
+                String row = br.readLine().trim();
+
+                if (row.isEmpty()) {
+                    continue;
+                }
+
                 Task task = fromString(row);
                 int originalId = task.getId();
+                // Prepare auto id generating
+                manager.idCounter = originalId - 1;
 
                 switch (task.getType()) {
                     case TASK -> task = manager.createAndAddTask(task);
@@ -59,71 +67,15 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     default -> throw new ManagerLoadException("Неизвестный тип задачи: " + task.getType());
                 }
 
-                task.setId(originalId);
-                // up ids for feature tasks
-                manager.idCounter = Integer.max(manager.idCounter, originalId);
+                maxId = Integer.max(maxId, originalId);
             }
         } catch (IOException exception) {
             throw new ManagerLoadException("Ошибка при чтении FileBackedTaskManager из файла");
         }
 
+        manager.idCounter = maxId;
         manager.setAvailableSave(true);
         return manager;
-    }
-
-    private static void createDataFile(File fileWithData) {
-        try {
-            Files.createFile(fileWithData.toPath());
-        } catch (IOException exception) {
-            throw new ManagerSaveException("Ошибка при создании файла для FileBackedTaskManager");
-        }
-    }
-
-    private static String taskToString(Task task) {
-        String result = String.join(dataDelimiter,
-                task.getId().toString(),
-                task.getType().toString(),
-                task.getTitle(),
-                task.getStatus().toString(),
-                task.getDescription()
-        );
-
-        if (task.getType() == TaskType.SUBTASK) {
-            result = String.join(dataDelimiter, result, ((Subtask) task).getEpicId().toString());
-        }
-
-        return result;
-    }
-
-    private static Task fromString(String value) {
-        String[] cols = value.split(dataDelimiter);
-
-        int id = Integer.parseInt(cols[0]);
-        TaskType type = TaskType.valueOf(cols[1]);
-        String title = cols[2];
-        TaskStatus status = TaskStatus.valueOf(cols[3]);
-        String description = cols[4];
-        Task task;
-
-        switch (type) {
-            case TASK -> {
-                task = new Task(title, description, status);
-            }
-
-            case EPIC -> {
-                task = new Epic(title, description);
-            }
-
-            case SUBTASK -> {
-                int epicId = Integer.parseInt(cols[5]);
-                task = new Subtask(title, description, status, epicId);
-            }
-
-            default -> throw new ManagerLoadException("Неизвестный тип задачи: " + type);
-        }
-
-        task.setId(id);
-        return task;
     }
 
     public boolean isAvailableSave() {
@@ -132,6 +84,14 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public void setAvailableSave(boolean availableSave) {
         this.availableSave = availableSave;
+    }
+
+    private static void createDataFile(File fileWithData) {
+        try {
+            Files.createFile(fileWithData.toPath());
+        } catch (IOException exception) {
+            throw new ManagerSaveException("Ошибка при создании файла для FileBackedTaskManager");
+        }
     }
 
     @Override
@@ -209,7 +169,54 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         save();
     }
 
-    private void save() {
+    private static String taskToString(Task task) {
+        String result = String.join(dataDelimiter,
+                task.getId().toString(),
+                task.getType().toString(),
+                task.getTitle(),
+                task.getStatus().toString(),
+                task.getDescription()
+        );
+
+        if (task.getType() == TaskType.SUBTASK) {
+            result = String.join(dataDelimiter, result, ((Subtask) task).getEpicId().toString());
+        }
+
+        return result;
+    }
+
+    private static Task fromString(String value) {
+        String[] cols = value.split(dataDelimiter);
+
+        int id = Integer.parseInt(cols[0]);
+        TaskType type = TaskType.valueOf(cols[1]);
+        String title = cols[2];
+        TaskStatus status = TaskStatus.valueOf(cols[3]);
+        String description = cols[4];
+        Task task;
+
+        switch (type) {
+            case TASK -> {
+                task = new Task(title, description, status);
+            }
+
+            case EPIC -> {
+                task = new Epic(title, description);
+            }
+
+            case SUBTASK -> {
+                int epicId = Integer.parseInt(cols[5]);
+                task = new Subtask(title, description, status, epicId);
+            }
+
+            default -> throw new ManagerLoadException("Неизвестный тип задачи: " + type);
+        }
+
+        task.setId(id);
+        return task;
+    }
+
+    public void save() {
         if (!isAvailableSave()) {
             return;
         }
