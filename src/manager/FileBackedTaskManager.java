@@ -57,22 +57,18 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 }
 
                 Task task = fromString(row);
-                int originalId = task.getId();
-                // Prepare auto id generating
-                manager.idCounter = originalId - 1;
 
                 switch (task.getType()) {
-                    case TASK -> task = manager.createAndAddTask(task);
+                    case TASK -> manager.addTask(task);
 
-                    case EPIC -> task = manager.createAndAddEpic((Epic) task);
+                    case EPIC -> manager.addEpic((Epic) task);
 
-                    case SUBTASK -> {
-                        task = manager.createAndAddSubtask((Subtask) task);
-                    }
+                    case SUBTASK -> manager.addSubtask((Subtask) task);
+
                     default -> throw new ManagerLoadException("Неизвестный тип задачи: " + task.getType());
                 }
 
-                maxId = Integer.max(maxId, originalId);
+                maxId = Integer.max(maxId, task.getId());
             }
         } catch (IOException exception) {
             throw new ManagerLoadException("Ошибка при чтении FileBackedTaskManager из файла");
