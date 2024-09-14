@@ -235,7 +235,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileWithData, charset))) {
-            bw.write(getHeaderForDataFile() + "\n");
+            int tasksQuantity = tasks.size() + subtasks.size() + epics.size();
+
+            if (tasksQuantity > 0) {
+                bw.write(getHeaderForDataFile() + "\n");
+            }
+
             List<Map<Integer, ? extends Task>> maps = List.of(
                     tasks,
                     epics,
