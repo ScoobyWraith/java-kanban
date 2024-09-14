@@ -44,6 +44,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         manager.setAvailableSave(false);
 
         try (BufferedReader br = new BufferedReader(new FileReader(file, charset))) {
+            // skip first line with header
+            if (br.ready()) {
+                br.readLine();
+            }
+
             while (br.ready()) {
                 String row = br.readLine().trim();
 
@@ -169,6 +174,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         save();
     }
 
+    private static String getHeaderForDataFile() {
+        return "id,type,title,status,description,epic";
+    }
+
     private static String taskToString(Task task) {
         String result = String.join(dataDelimiter,
                 task.getId().toString(),
@@ -226,6 +235,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileWithData, charset))) {
+            bw.write(getHeaderForDataFile() + "\n");
             List<Map<Integer, ? extends Task>> maps = List.of(
                     tasks,
                     epics,
