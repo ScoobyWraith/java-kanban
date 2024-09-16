@@ -1,6 +1,7 @@
 package model;
 
 public class Subtask extends Task {
+    protected final TaskType type = TaskType.SUBTASK;
     private final int epicId;
 
     public Subtask(String title, String description, TaskStatus status, int epicId) {
@@ -21,8 +22,12 @@ public class Subtask extends Task {
         }
     }
 
-    public int getEpicId() {
+    public Integer getEpicId() {
         return epicId;
+    }
+
+    public TaskType getType() {
+        return type;
     }
 
     public Subtask getCopy() {

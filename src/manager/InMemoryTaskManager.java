@@ -11,10 +11,10 @@ import java.util.List;
 import java.util.Map;
 
 public class InMemoryTaskManager implements TaskManager {
-    private final Map<Integer, Task> tasks;
-    private final Map<Integer, Subtask> subtasks;
-    private final Map<Integer, Epic> epics;
-    private int idCounter = 0;
+    protected final Map<Integer, Task> tasks;
+    protected final Map<Integer, Subtask> subtasks;
+    protected final Map<Integer, Epic> epics;
+    protected int idCounter = 0;
     private final HistoryManager historyManager;
 
     public InMemoryTaskManager() {
@@ -256,6 +256,22 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public List<Task> getHistory() {
         return historyManager.getHistory();
+    }
+
+    protected void addTask(Task task) {
+        tasks.put(task.getId(), task);
+    }
+
+    protected void addSubtask(Subtask subtask) {
+        subtasks.put(subtask.getId(), subtask);
+        Epic epic = epics.get(subtask.getEpicId());
+        epic.addSubtaskId(subtask.getId());
+        updateEpicStatus(epic.getId());
+    }
+
+    protected void addEpic(Epic epic) {
+        epics.put(epic.getId(), epic);
+        updateEpicStatus(epic.getId());
     }
 
     private int createAndGetNewTaskId() {
