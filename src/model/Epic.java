@@ -13,7 +13,7 @@ public class Epic extends Task {
     }
 
     public Epic(Epic epic) {
-        super(epic.title, epic.description, epic.status);
+        super(epic.title, epic.description, epic.status, epic.duration, epic.startTime);
         this.id = epic.id;
         subtaskIds = new ArrayList<>(epic.subtaskIds);
     }
