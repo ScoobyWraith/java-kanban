@@ -303,7 +303,7 @@ public class InMemoryTaskManager implements TaskManager {
         removeFromPrioritizedTasks(task.getId());
 
         // add/update task in list
-        if (task.getStartTime().isPresent()) {
+        if (!isTaskWithoutTimePeriod(task)) {
             prioritizedTasks.add(task);
         }
     }
@@ -321,11 +321,7 @@ public class InMemoryTaskManager implements TaskManager {
             return;
         }
 
-        Map<Integer, Task> poolForCheck = new HashMap<>(tasks);
-        poolForCheck.putAll(subtasks);
-
-        poolForCheck
-                .values()
+        prioritizedTasks
                 .forEach((Task t) -> {
                     if (areTaskTimesIntersect(t, task)) {
                         throw new ManagerTaskTimeIntersection(
