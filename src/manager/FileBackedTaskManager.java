@@ -18,9 +18,8 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -250,17 +249,19 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 bw.write(getHeaderForDataFile() + "\n");
             }
 
-            List<Map<Integer, ? extends Task>> maps = List.of(
-                    tasks,
-                    epics,
-                    subtasks
-            );
+            Map<Integer, Task> allTasks = new HashMap<>(tasks);
+            allTasks.putAll(epics);
+            allTasks.putAll(subtasks);
 
-            for (Map<Integer, ? extends Task> map : maps) {
-                for (Task task : map.values()) {
-                    bw.write(taskToString(task) + "\n");
-                }
-            }
+            allTasks
+                    .values()
+                    .forEach((Task t) -> {
+                        try {
+                            bw.write(taskToString(t) + "\n");
+                        } catch (IOException e) {
+                            throw new ManagerSaveException("Ошибка при сохранении FileBackedTaskManager в файл");
+                        }
+                    });
         } catch (IOException exception) {
             throw new ManagerSaveException("Ошибка при сохранении FileBackedTaskManager в файл");
         }
