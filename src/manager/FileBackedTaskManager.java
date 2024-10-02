@@ -17,8 +17,12 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private static final String dataDelimiter = ",";
@@ -171,16 +175,21 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     private static String getHeaderForDataFile() {
-        return "id,type,title,status,description,epic";
+        return "id,type,title,status,description,startTime,duration,epic";
     }
 
     private static String taskToString(Task task) {
+        Duration duration = task.getDuration().orElse(Duration.ofMinutes(0));
+        Optional<LocalDateTime> startTime = task.getStartTime();
+
         String result = String.join(dataDelimiter,
                 task.getId().toString(),
                 task.getType().toString(),
                 task.getTitle(),
                 task.getStatus().toString(),
-                task.getDescription()
+                task.getDescription(),
+                startTime.map(LocalDateTime::toString).orElse(" "),
+                Long.toString(duration.toMinutes())
         );
 
         if (task.getType() == TaskType.SUBTASK) {
@@ -198,11 +207,15 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         String title = cols[2];
         TaskStatus status = TaskStatus.valueOf(cols[3]);
         String description = cols[4];
+        LocalDateTime startTime = cols[5].isBlank() ? null : LocalDateTime.parse(cols[5]);
+        long durationTime = Long.parseLong(cols[6]);
+        Duration duration = durationTime == 0 ? null : Duration.ofMinutes(durationTime);
+
         Task task;
 
         switch (type) {
             case TASK -> {
-                task = new Task(title, description, status);
+                task = new Task(title, description, status, duration, startTime);
             }
 
             case EPIC -> {
@@ -210,8 +223,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             }
 
             case SUBTASK -> {
-                int epicId = Integer.parseInt(cols[5]);
-                task = new Subtask(title, description, status, epicId);
+                int epicId = Integer.parseInt(cols[7]);
+                task = new Subtask(title, description, status, epicId, duration, startTime);
             }
 
             default -> throw new ManagerLoadException("Неизвестный тип задачи: " + type);
