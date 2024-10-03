@@ -5,7 +5,6 @@ import model.Epic;
 import model.Subtask;
 import model.Task;
 import model.TaskStatus;
-import util.EpicUpdatesHolder;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -22,8 +21,8 @@ public class InMemoryTaskManager implements TaskManager {
     protected final Map<Integer, Subtask> subtasks;
     protected final Map<Integer, Epic> epics;
     protected final TreeSet<Task> prioritizedTasks;
-    protected int idCounter = 0;
     private final HistoryManager historyManager;
+    protected int idCounter = 0;
 
     public InMemoryTaskManager() {
         this.tasks = new HashMap<>();
@@ -366,53 +365,57 @@ public class InMemoryTaskManager implements TaskManager {
             return;
         }
 
-        EpicUpdatesHolder epicHolder = new EpicUpdatesHolder();
+        int subtasksWithStatusNew = 0;
+        int subtasksWithStatusDone = 0;
+        LocalDateTime epicStartTime = null;
+        LocalDateTime epicEndTime = null;
+        long epicDuration = 0;
 
-        subtaskIds.forEach((Integer subtaskId) -> {
+        for (int subtaskId : subtaskIds) {
             Subtask subtask = subtasks.get(subtaskId);
             Optional<LocalDateTime> startTime = subtask.getStartTime();
             Optional<LocalDateTime> endTime = subtask.getEndTime();
             Optional<Duration> duration = subtask.getDuration();
 
             if (subtask.getStatus() == TaskStatus.NEW) {
-                epicHolder.incSubtasksWithStatusNew();
+                subtasksWithStatusNew++;
             }
 
             if (subtask.getStatus() == TaskStatus.DONE) {
-                epicHolder.incSubtasksWithStatusDone();
+                subtasksWithStatusDone++;
             }
 
             if (startTime.isPresent() && duration.isPresent() && endTime.isPresent()) {
-                if (epicHolder.getEpicStartTime() == null) {
-                    epicHolder.setEpicStartTime(startTime.get());
+                if (epicStartTime == null) {
+                    epicStartTime = startTime.get();
                 }
 
-                if (epicHolder.getEpicEndTime() == null) {
-                    epicHolder.setEpicEndTime(endTime.get());
+                if (epicEndTime == null) {
+                    epicEndTime = endTime.get();
                 }
 
-                if (startTime.get().isBefore(epicHolder.getEpicStartTime())) {
-                    epicHolder.setEpicStartTime(startTime.get());
+                if (startTime.get().isBefore(epicStartTime)) {
+                    epicStartTime = startTime.get();
                 }
 
-                if (endTime.get().isAfter(epicHolder.getEpicEndTime())) {
-                    epicHolder.setEpicEndTime(endTime.get());
+                if (endTime.get().isAfter(epicEndTime)) {
+                    epicEndTime = endTime.get();
                 }
 
-                epicHolder.addEpicDuration(duration.get().toMinutes());
+                epicDuration += duration.get().toMinutes();
             }
-        });
+        }
 
-        epic.setStartTime(epicHolder.getEpicStartTime());
-        epic.setEndTime(epicHolder.getEpicEndTime());
-        epic.setDuration(epicHolder.getEpicDuration() == 0 ? null : Duration.ofMinutes(epicHolder.getEpicDuration()));
+        epic.setStartTime(epicStartTime);
+        epic.setEndTime(epicEndTime);
+        epic.setDuration(epicDuration == 0 ? null : Duration.ofMinutes(epicDuration));
 
-        if (epicHolder.getSubtasksWithStatusNew() == subtaskIds.size()) {
+        if (subtasksWithStatusNew == subtaskIds.size()) {
             epic.setStatus(TaskStatus.NEW);
             return;
         }
 
-        if (epicHolder.getSubtasksWithStatusDone() == subtaskIds.size()) {
+        if (subtasksWithStatusDone == subtaskIds.size()) {
             epic.setStatus(TaskStatus.DONE);
             return;
         }

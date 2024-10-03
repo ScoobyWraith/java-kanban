@@ -50,10 +50,6 @@ public class Epic extends Task {
         return type;
     }
 
-    public void setEndTime(LocalDateTime endTime) {
-        this.endTime = endTime;
-    }
-
     public Epic getCopy() {
         return new Epic(this);
     }
@@ -61,6 +57,10 @@ public class Epic extends Task {
     @Override
     public Optional<LocalDateTime> getEndTime() {
         return Optional.ofNullable(this.endTime);
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
     }
 
     @Override

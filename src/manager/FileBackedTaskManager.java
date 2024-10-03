@@ -19,7 +19,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -82,20 +82,80 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return manager;
     }
 
-    public boolean isAvailableSave() {
-        return availableSave;
-    }
-
-    public void setAvailableSave(boolean availableSave) {
-        this.availableSave = availableSave;
-    }
-
     private static void createDataFile(File fileWithData) {
         try {
             Files.createFile(fileWithData.toPath());
         } catch (IOException exception) {
             throw new ManagerSaveException("Ошибка при создании файла для FileBackedTaskManager");
         }
+    }
+
+    private static String getHeaderForDataFile() {
+        return "id,type,title,status,description,startTime,duration,epic";
+    }
+
+    private static String taskToString(Task task) {
+        Duration duration = task.getDuration().orElse(Duration.ofMinutes(0));
+        Optional<LocalDateTime> startTime = task.getStartTime();
+
+        String result = String.join(dataDelimiter,
+                task.getId().toString(),
+                task.getType().toString(),
+                task.getTitle(),
+                task.getStatus().toString(),
+                task.getDescription(),
+                startTime.map(LocalDateTime::toString).orElse(" "),
+                Long.toString(duration.toMinutes())
+        );
+
+        if (task.getType() == TaskType.SUBTASK) {
+            result = String.join(dataDelimiter, result, ((Subtask) task).getEpicId().toString());
+        }
+
+        return result;
+    }
+
+    private static Task fromString(String value) {
+        String[] cols = value.split(dataDelimiter);
+
+        int id = Integer.parseInt(cols[0]);
+        TaskType type = TaskType.valueOf(cols[1]);
+        String title = cols[2];
+        TaskStatus status = TaskStatus.valueOf(cols[3]);
+        String description = cols[4];
+        LocalDateTime startTime = cols[5].isBlank() ? null : LocalDateTime.parse(cols[5]);
+        long durationTime = Long.parseLong(cols[6]);
+        Duration duration = durationTime == 0 ? null : Duration.ofMinutes(durationTime);
+
+        Task task;
+
+        switch (type) {
+            case TASK -> {
+                task = new Task(title, description, status, duration, startTime);
+            }
+
+            case EPIC -> {
+                task = new Epic(title, description);
+            }
+
+            case SUBTASK -> {
+                int epicId = Integer.parseInt(cols[7]);
+                task = new Subtask(title, description, status, epicId, duration, startTime);
+            }
+
+            default -> throw new ManagerLoadException("Неизвестный тип задачи: " + type);
+        }
+
+        task.setId(id);
+        return task;
+    }
+
+    public boolean isAvailableSave() {
+        return availableSave;
+    }
+
+    public void setAvailableSave(boolean availableSave) {
+        this.availableSave = availableSave;
     }
 
     @Override
@@ -173,66 +233,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         save();
     }
 
-    private static String getHeaderForDataFile() {
-        return "id,type,title,status,description,startTime,duration,epic";
-    }
-
-    private static String taskToString(Task task) {
-        Duration duration = task.getDuration().orElse(Duration.ofMinutes(0));
-        Optional<LocalDateTime> startTime = task.getStartTime();
-
-        String result = String.join(dataDelimiter,
-                task.getId().toString(),
-                task.getType().toString(),
-                task.getTitle(),
-                task.getStatus().toString(),
-                task.getDescription(),
-                startTime.map(LocalDateTime::toString).orElse(" "),
-                Long.toString(duration.toMinutes())
-        );
-
-        if (task.getType() == TaskType.SUBTASK) {
-            result = String.join(dataDelimiter, result, ((Subtask) task).getEpicId().toString());
-        }
-
-        return result;
-    }
-
-    private static Task fromString(String value) {
-        String[] cols = value.split(dataDelimiter);
-
-        int id = Integer.parseInt(cols[0]);
-        TaskType type = TaskType.valueOf(cols[1]);
-        String title = cols[2];
-        TaskStatus status = TaskStatus.valueOf(cols[3]);
-        String description = cols[4];
-        LocalDateTime startTime = cols[5].isBlank() ? null : LocalDateTime.parse(cols[5]);
-        long durationTime = Long.parseLong(cols[6]);
-        Duration duration = durationTime == 0 ? null : Duration.ofMinutes(durationTime);
-
-        Task task;
-
-        switch (type) {
-            case TASK -> {
-                task = new Task(title, description, status, duration, startTime);
-            }
-
-            case EPIC -> {
-                task = new Epic(title, description);
-            }
-
-            case SUBTASK -> {
-                int epicId = Integer.parseInt(cols[7]);
-                task = new Subtask(title, description, status, epicId, duration, startTime);
-            }
-
-            default -> throw new ManagerLoadException("Неизвестный тип задачи: " + type);
-        }
-
-        task.setId(id);
-        return task;
-    }
-
     public void save() {
         if (!isAvailableSave()) {
             return;
@@ -249,19 +249,17 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 bw.write(getHeaderForDataFile() + "\n");
             }
 
-            Map<Integer, Task> allTasks = new HashMap<>(tasks);
-            allTasks.putAll(epics);
-            allTasks.putAll(subtasks);
+            List<Map<Integer, ? extends Task>> maps = List.of(
+                    tasks,
+                    epics,
+                    subtasks
+            );
 
-            allTasks
-                    .values()
-                    .forEach((Task t) -> {
-                        try {
-                            bw.write(taskToString(t) + "\n");
-                        } catch (IOException e) {
-                            throw new ManagerSaveException("Ошибка при сохранении FileBackedTaskManager в файл");
-                        }
-                    });
+            for (Map<Integer, ? extends Task> map : maps) {
+                for (Task task : map.values()) {
+                    bw.write(taskToString(task) + "\n");
+                }
+            }
         } catch (IOException exception) {
             throw new ManagerSaveException("Ошибка при сохранении FileBackedTaskManager в файл");
         }
