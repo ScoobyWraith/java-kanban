@@ -9,18 +9,20 @@ import model.TaskStatus;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 public class InMemoryTaskManager implements TaskManager {
     protected final Map<Integer, Task> tasks;
     protected final Map<Integer, Subtask> subtasks;
     protected final Map<Integer, Epic> epics;
-    protected final TreeSet<Task> prioritizedTasks;
+    protected final Set<Task> prioritizedTasks;
     private final HistoryManager historyManager;
     protected int idCounter = 0;
 
@@ -29,7 +31,7 @@ public class InMemoryTaskManager implements TaskManager {
         this.subtasks = new HashMap<>();
         this.epics = new HashMap<>();
         historyManager = Managers.getDefaultHistory();
-        this.prioritizedTasks = new TreeSet<>((t1, t2) -> t1.getStartTime().get().compareTo(t2.getStartTime().get()));
+        this.prioritizedTasks = new TreeSet<>(Comparator.comparing((Task t) -> t.getStartTime().get()));
     }
 
     // a. Получение списка всех задач [Task]
