@@ -13,9 +13,16 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
-class FileBackedTaskManagerTest {
+class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
+    @Override
+    protected FileBackedTaskManager createTaskManager() {
+        return (FileBackedTaskManager) Managers.getFileBackedManager(tmpFile);
+    }
+
     private static File tmpFile;
 
     @BeforeAll
@@ -39,10 +46,9 @@ class FileBackedTaskManagerTest {
 
     @Test
     public void managerLoadFromEmptyFile() {
-        TaskManager manager = Managers.getFileBackedManager(tmpFile);
-        List<Task> tasks = manager.getAllTasks();
-        List<Epic> epics = manager.getAllEpics();
-        List<Subtask> subtasks = manager.getAllSubtasks();
+        List<Task> tasks = taskManager.getAllTasks();
+        List<Epic> epics = taskManager.getAllEpics();
+        List<Subtask> subtasks = taskManager.getAllSubtasks();
 
         Assertions.assertEquals(
                 0,
@@ -53,8 +59,7 @@ class FileBackedTaskManagerTest {
 
     @Test
     public void managerSaveEmptyFile() {
-        FileBackedTaskManager manager = new FileBackedTaskManager(tmpFile);
-        manager.save();
+        taskManager.save();
 
         Assertions.assertEquals(
                 0,
@@ -65,21 +70,19 @@ class FileBackedTaskManagerTest {
 
     @Test
     public void saveAndLoadTasks() {
-        TaskManager managerToSave = Managers.getFileBackedManager(tmpFile);
+        Task task1 = taskManager.createAndAddTask(new Task("Task 1", "Desc", TaskStatus.NEW));
+        Task task2 = taskManager.createAndAddTask(new Task("Task 2", "Desc", TaskStatus.NEW));
 
-        Task task1 = managerToSave.createAndAddTask(new Task("Task 1", "Desc", TaskStatus.NEW));
-        Task task2 = managerToSave.createAndAddTask(new Task("Task 2", "Desc", TaskStatus.NEW));
+        Epic epic1 = taskManager.createAndAddEpic(new Epic("Epic 1", "Desc"));
 
-        Epic epic1 = managerToSave.createAndAddEpic(new Epic("Epic 1", "Desc"));
-
-        Subtask subtask1_1 = managerToSave
+        Subtask subtask1_1 = taskManager
                 .createAndAddSubtask(new Subtask("Sub 1_1", "Desc", TaskStatus.NEW, epic1.getId()));
-        Subtask subtask1_2 = managerToSave
+        Subtask subtask1_2 = taskManager
                 .createAndAddSubtask(new Subtask("Sub 1_2", "Desc", TaskStatus.NEW, epic1.getId()));
 
-        Epic epic2 = managerToSave.createAndAddEpic(new Epic("Epic 2", "Desc"));
+        Epic epic2 = taskManager.createAndAddEpic(new Epic("Epic 2", "Desc"));
 
-        Subtask subtask2 = managerToSave
+        Subtask subtask2 = taskManager
                 .createAndAddSubtask(new Subtask("Sub 2", "Desc", TaskStatus.NEW, epic2.getId()));
 
         task2.setTitle("New title");
@@ -104,5 +107,52 @@ class FileBackedTaskManagerTest {
 
         Epic epic2FromFile = managerToLoad.getEpicById(epic2.getId());
         Assertions.assertEquals(epic2, epic2FromFile, "Неверные сохранение/загрузка эпика");
+    }
+
+    @Test
+    public void checkSaveLoadAllSubtaskFields() {
+        Epic epic = taskManager.createAndAddEpic(new Epic("t", "d"));
+        Subtask s = taskManager.createAndAddSubtask(new Subtask(
+                "t",
+                "d",
+                TaskStatus.IN_PROGRESS,
+                epic.getId(),
+                Duration.ofMinutes(50),
+                LocalDateTime.of(2024, 1, 1, 0, 0)
+        ));
+
+        TaskManager managerToLoad = Managers.getFileBackedManager(tmpFile);
+        Subtask fromFile = managerToLoad.getSubtaskById(s.getId());
+
+        Assertions.assertEquals(s.getId(), fromFile.getId(), "Неверный ИД");
+        Assertions.assertEquals(s.getTitle(), fromFile.getTitle(), "Неверное название");
+        Assertions.assertEquals(s.getDescription(), fromFile.getDescription(), "Неверное описание");
+        Assertions.assertEquals(s.getStatus(), fromFile.getStatus(), "Неверный статус");
+        Assertions.assertEquals(s.getEpicId(), fromFile.getEpicId(), "Неверный эпик ИД");
+        Assertions.assertEquals(
+                s.getDuration().get(),
+                fromFile.getDuration().get(),
+                "Неверная продолжительность"
+        );
+        Assertions.assertEquals(
+                s.getStartTime().get(),
+                fromFile.getStartTime().get(),
+                "Неверная дата начала"
+        );
+    }
+
+    @Test
+    public void testThrowExceptionOnSaveFile() {
+        Assertions.assertDoesNotThrow(
+                () -> {
+                    File notExistedFile = File.createTempFile("tmp", ".csv");
+                    Files.deleteIfExists(notExistedFile.toPath());
+                    taskManager = new FileBackedTaskManager(notExistedFile);
+                    Task task = taskManager.createAndAddTask(new Task("t", "d", TaskStatus.NEW));
+
+                    Files.deleteIfExists(notExistedFile.toPath());
+                },
+                "Попытка сохранения в несуществующий файл выбросила исключение"
+        );
     }
 }

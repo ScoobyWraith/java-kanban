@@ -269,7 +269,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Set<Task> getPrioritizedTasks() {
-        return Set.copyOf(this.prioritizedTasks);
+        return this.prioritizedTasks;
     }
 
     protected void addTask(Task task) {

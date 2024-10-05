@@ -21,7 +21,12 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    public void oldVersionOfTasksInHistory() {
+    public void testEmptyHistory() {
+        Assertions.assertEquals(0, historyManager.getHistory().size(), "История не пуста");
+    }
+
+    @Test
+    public void removeOldVersionOfTasksInHistory() {
         final Task task = taskManager.createAndAddTask(new Task("a", "b", TaskStatus.NEW));
         final Epic epic = taskManager.createAndAddEpic(new Epic("a", "b"));
         final Subtask subtask
@@ -105,17 +110,20 @@ class InMemoryHistoryManagerTest {
 
     @Test
     public void checkManualRemovingOfTasks() {
-        final Task task = taskManager.createAndAddTask(new Task("a", "b", TaskStatus.NEW));
+        final Task task1 = taskManager.createAndAddTask(new Task("a", "b", TaskStatus.NEW));
+        final Task task2 = taskManager.createAndAddTask(new Task("a", "b", TaskStatus.NEW));
         final Epic epic = taskManager.createAndAddEpic(new Epic("a", "b"));
         final Subtask subtask
                 = taskManager.createAndAddSubtask(new Subtask("a", "b", TaskStatus.NEW, epic.getId()));
 
-        historyManager.add(task);
+        historyManager.add(task1);
+        historyManager.add(task2);
         historyManager.add(epic);
         historyManager.add(subtask);
 
-        historyManager.remove(task.getId());
+        historyManager.remove(task2.getId());
         historyManager.remove(subtask.getId());
+        historyManager.remove(task1.getId());
 
         List<Task> history = historyManager.getHistory();
 
