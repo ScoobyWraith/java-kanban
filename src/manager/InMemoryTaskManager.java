@@ -348,10 +348,7 @@ public class InMemoryTaskManager implements TaskManager {
             return true;
         }
 
-        return startTask1.isAfter(startTask2) && startTask1.isBefore(endTask2)
-                || endTask1.isAfter(startTask2) && endTask1.isBefore(endTask2)
-                || startTask2.isAfter(startTask1) && startTask2.isBefore(endTask1)
-                || endTask2.isAfter(startTask1) && endTask2.isBefore(endTask1);
+        return startTask1.isBefore(endTask2) && startTask2.isBefore(endTask1);
     }
 
     private int createAndGetNewTaskId() {
