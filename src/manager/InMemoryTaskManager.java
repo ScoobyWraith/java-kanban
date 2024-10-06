@@ -73,7 +73,7 @@ public class InMemoryTaskManager implements TaskManager {
 
         epics.values().forEach((Epic epic) -> {
             epic.clearAllSubtaskIds();
-            updateEpic(epic);
+            updateEpicStatusAndTimes(epic.getId());
         });
     }
 
@@ -188,7 +188,7 @@ public class InMemoryTaskManager implements TaskManager {
         checkTasksTimeIntersection(subtask);
         subtasks.put(subtask.getId(), subtask);
         Epic epic = epics.get(subtask.getEpicId());
-        updateEpic(epic);
+        updateEpicStatusAndTimes(epic.getId());
         updateInPrioritizedTasks(subtask);
     }
 
