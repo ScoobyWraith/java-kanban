@@ -1,11 +1,14 @@
 package model;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class Epic extends Task {
-    TaskType type = TaskType.EPIC;
+    protected final TaskType type = TaskType.EPIC;
     private final List<Integer> subtaskIds;
+    private LocalDateTime endTime;
 
     public Epic(String title, String description) {
         super(title, description, TaskStatus.NEW);
@@ -13,8 +16,9 @@ public class Epic extends Task {
     }
 
     public Epic(Epic epic) {
-        super(epic.title, epic.description, epic.status);
+        super(epic.title, epic.description, epic.status, epic.duration, epic.startTime);
         this.id = epic.id;
+        this.endTime = epic.endTime;
         subtaskIds = new ArrayList<>(epic.subtaskIds);
     }
 
@@ -48,6 +52,15 @@ public class Epic extends Task {
 
     public Epic getCopy() {
         return new Epic(this);
+    }
+
+    @Override
+    public Optional<LocalDateTime> getEndTime() {
+        return Optional.ofNullable(this.endTime);
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
     }
 
     @Override

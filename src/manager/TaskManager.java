@@ -5,6 +5,7 @@ import model.Subtask;
 import model.Task;
 
 import java.util.List;
+import java.util.Set;
 
 public interface TaskManager {
     // a. Получение списка всех задач [Task]
@@ -66,4 +67,6 @@ public interface TaskManager {
 
     // Получить список из последних просмотренных задач
     List<Task> getHistory();
+
+    Set<Task> getPrioritizedTasks();
 }
