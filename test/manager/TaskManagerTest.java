@@ -432,26 +432,124 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         );
     }
 
+    /*
+    CASE:
+    (S1)|————————————————————————|(E1)
+                  (S2)|————————————————————————|(E2)
+     */
     @Test
-    public void testThrowExceptionWhileTimeIntersect() {
+    public void testThrowExceptionWhileTimeIntersectTwoOverOne() {
         Assertions.assertThrows(
                 ManagerTaskTimeIntersection.class,
                 () -> {
                     Epic epic = taskManager.createAndAddEpic(new Epic("t", "d"));
                     taskManager.createAndAddTask(new Task(
-                            "",
-                            "",
+                            "1",
+                            "1",
                             TaskStatus.NEW,
                             Duration.ofMinutes(60),
                             LocalDateTime.of(2024, 1, 1, 0, 0)
                     ));
                     taskManager.createAndAddSubtask(new Subtask(
-                            "",
-                            "",
+                            "2",
+                            "2",
                             TaskStatus.NEW,
                             epic.getId(),
                             Duration.ofMinutes(60),
-                            LocalDateTime.of(2024, 1, 1, 0, 25)
+                            LocalDateTime.of(2024, 1, 1, 0, 30)
+                    ));
+                },
+                "Попытка добавить задачи с пересекающимися временными интервалами не привела к выбросу исключения"
+        );
+    }
+
+    /*
+    CASE:
+                 (S1)|————————————————————————|(E1)
+    (S2)|————————————————————————|(E2)
+     */
+    @Test
+    public void testThrowExceptionWhileTimeIntersectOneOverTwo() {
+        Assertions.assertThrows(
+                ManagerTaskTimeIntersection.class,
+                () -> {
+                    Epic epic = taskManager.createAndAddEpic(new Epic("t", "d"));
+                    taskManager.createAndAddTask(new Task(
+                            "1",
+                            "1",
+                            TaskStatus.NEW,
+                            Duration.ofMinutes(60),
+                            LocalDateTime.of(2024, 1, 1, 0, 30)
+                    ));
+                    taskManager.createAndAddSubtask(new Subtask(
+                            "2",
+                            "2",
+                            TaskStatus.NEW,
+                            epic.getId(),
+                            Duration.ofMinutes(60),
+                            LocalDateTime.of(2024, 1, 1, 0, 0)
+                    ));
+                },
+                "Попытка добавить задачи с пересекающимися временными интервалами не привела к выбросу исключения"
+        );
+    }
+
+    /*
+    CASE:
+    (S1)|————————————————————————|(E1)
+            (S2)|—————————|(E2)
+     */
+    @Test
+    public void testThrowExceptionWhileTimeIntersectTwoInOne() {
+        Assertions.assertThrows(
+                ManagerTaskTimeIntersection.class,
+                () -> {
+                    Epic epic = taskManager.createAndAddEpic(new Epic("t", "d"));
+                    taskManager.createAndAddTask(new Task(
+                            "1",
+                            "1",
+                            TaskStatus.NEW,
+                            Duration.ofMinutes(60),
+                            LocalDateTime.of(2024, 1, 1, 0, 0)
+                    ));
+                    taskManager.createAndAddSubtask(new Subtask(
+                            "2",
+                            "2",
+                            TaskStatus.NEW,
+                            epic.getId(),
+                            Duration.ofMinutes(15),
+                            LocalDateTime.of(2024, 1, 1, 0, 10)
+                    ));
+                },
+                "Попытка добавить задачи с пересекающимися временными интервалами не привела к выбросу исключения"
+        );
+    }
+
+    /*
+    CASE:
+            (S1)|—————————|(E1)
+    (S2)|————————————————————————|(E2)
+     */
+    @Test
+    public void testThrowExceptionWhileTimeIntersectOneInTwo() {
+        Assertions.assertThrows(
+                ManagerTaskTimeIntersection.class,
+                () -> {
+                    Epic epic = taskManager.createAndAddEpic(new Epic("t", "d"));
+                    taskManager.createAndAddTask(new Task(
+                            "1",
+                            "1",
+                            TaskStatus.NEW,
+                            Duration.ofMinutes(15),
+                            LocalDateTime.of(2024, 1, 1, 0, 10)
+                    ));
+                    taskManager.createAndAddSubtask(new Subtask(
+                            "2",
+                            "2",
+                            TaskStatus.NEW,
+                            epic.getId(),
+                            Duration.ofMinutes(60),
+                            LocalDateTime.of(2024, 1, 1, 0, 0)
                     ));
                 },
                 "Попытка добавить задачи с пересекающимися временными интервалами не привела к выбросу исключения"
@@ -459,7 +557,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    public void testDontThrowExceptionWhileTimeIntersect() {
+    public void testDontThrowExceptionWhileTimeDontIntersect() {
         Assertions.assertDoesNotThrow(
                 () -> {
                     Epic epic = taskManager.createAndAddEpic(new Epic("t", "d"));
