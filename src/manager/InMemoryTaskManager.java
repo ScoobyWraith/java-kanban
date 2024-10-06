@@ -318,6 +318,8 @@ public class InMemoryTaskManager implements TaskManager {
         }
 
         prioritizedTasks
+                .stream()
+                .filter((Task t) -> !t.getId().equals(task.getId()))
                 .forEach((Task t) -> {
                     if (areTaskTimesIntersect(t, task)) {
                         throw new ManagerTaskTimeIntersection(
