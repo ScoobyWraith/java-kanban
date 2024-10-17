@@ -1,6 +1,8 @@
 package api;
 
 import api.hadlers.EpicHandler;
+import api.hadlers.HistoryHandler;
+import api.hadlers.PrioritizedTasksHandler;
 import api.hadlers.SubtaskHandler;
 import api.hadlers.TaskHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -19,6 +21,8 @@ public class HttpTaskServer {
         server.createContext(TaskHandler.handlePath, new TaskHandler(manager));
         server.createContext(SubtaskHandler.handlePath, new SubtaskHandler(manager));
         server.createContext(EpicHandler.handlePath, new EpicHandler(manager));
+        server.createContext(HistoryHandler.handlePath, new HistoryHandler(manager));
+        server.createContext(PrioritizedTasksHandler.handlePath, new PrioritizedTasksHandler(manager));
     }
 
     public static void main(String[] args) throws IOException {
