@@ -212,17 +212,13 @@ public class InMemoryTaskManager implements TaskManager {
             tasks.remove(id);
             historyManager.remove(id);
             removeFromPrioritizedTasks(id);
-            return;
         }
-
-        System.out.println("Задачи с ИД " + id + " не найдено для удаления");
     }
 
     // f. Удаление по идентификатору [Subtask]
     @Override
     public void deleteSubtask(int id) {
         if (!subtasks.containsKey(id)) {
-            System.out.println("Подзадачи с ИД " + id + " не найдены для удаления");
             return;
         }
 
@@ -239,7 +235,6 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteEpic(int id) {
         if (!epics.containsKey(id)) {
-            System.out.println("Эпик с ИД " + id + " не найден для удаления");
             return;
         }
 
