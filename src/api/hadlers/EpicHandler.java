@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
-public class EpicHandler extends BaseHttpHandler {
+public class EpicHandler extends BaseTasksHandler {
     public static String handlePath = "/epics";
 
     public EpicHandler(TaskManager manager) {

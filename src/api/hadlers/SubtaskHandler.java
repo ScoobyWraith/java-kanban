@@ -9,7 +9,7 @@ import model.Subtask;
 import java.io.IOException;
 import java.util.List;
 
-public class SubtaskHandler extends BaseHttpHandler {
+public class SubtaskHandler extends BaseTasksHandler {
     public static String handlePath = "/subtasks";
 
     public SubtaskHandler(TaskManager manager) {
