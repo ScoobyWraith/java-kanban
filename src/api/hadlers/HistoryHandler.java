@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 public class HistoryHandler extends BaseHttpHandler {
-    public static String handlePath = "/history";
+    public static final String handlePath = "/history";
 
     public HistoryHandler(TaskManager manager) {
         super(manager);

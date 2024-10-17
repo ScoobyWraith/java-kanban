@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 public class PrioritizedTasksHandler extends BaseHttpHandler {
-    public static String handlePath = "/prioritized";
+    public static final String handlePath = "/prioritized";
 
     public PrioritizedTasksHandler(TaskManager manager) {
         super(manager);

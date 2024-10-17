@@ -711,8 +711,9 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         final Task task1 = taskManager.createTask(new Task("a", "a", TaskStatus.NEW));
         taskManager.createTask(new Task("b", "b", TaskStatus.NEW));
         taskManager.deleteTask(task1.getId());
+        List<Task> tasks = taskManager.getTasks();
 
-        Assertions.assertNull(taskManager.getTaskById(task1.getId()), "Задача не была удалена");
+        Assertions.assertFalse(tasks.contains(task1), "Задача не была удалена");
 
         taskManager.removeAllTasks();
 

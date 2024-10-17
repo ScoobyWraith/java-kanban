@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.List;
 
 public class SubtaskHandler extends BaseTasksHandler {
-    public static String handlePath = "/subtasks";
+    public static final String handlePath = "/subtasks";
 
     public SubtaskHandler(TaskManager manager) {
         super(manager);

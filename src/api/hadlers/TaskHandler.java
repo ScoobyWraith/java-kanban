@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.List;
 
 public class TaskHandler extends BaseTasksHandler {
-    public static String handlePath = "/tasks";
+    public static final String handlePath = "/tasks";
 
     public TaskHandler(TaskManager manager) {
         super(manager);

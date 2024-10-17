@@ -1,18 +1,14 @@
 package api.hadlers;
 
+import api.HttpTaskServer;
 import api.Settings;
 import api.StatusCode;
-import api.adapters.DurationAdapter;
-import api.adapters.LocalDateTimeAdapter;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import manager.TaskManager;
 
 import java.io.IOException;
-import java.time.Duration;
-import java.time.LocalDateTime;
 
 public abstract class BaseHttpHandler implements HttpHandler {
     protected TaskManager manager;
@@ -21,13 +17,7 @@ public abstract class BaseHttpHandler implements HttpHandler {
 
     public BaseHttpHandler(TaskManager manager) {
         this.manager = manager;
-
-        gson = new GsonBuilder()
-                .serializeNulls()
-                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-                .registerTypeAdapter(Duration.class, new DurationAdapter())
-                .setPrettyPrinting()
-                .create();
+        gson = HttpTaskServer.getGson();
     }
 
     @Override

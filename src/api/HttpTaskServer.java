@@ -1,19 +1,34 @@
 package api;
 
+import api.adapters.DurationAdapter;
+import api.adapters.LocalDateTimeAdapter;
 import api.hadlers.EpicHandler;
 import api.hadlers.HistoryHandler;
 import api.hadlers.PrioritizedTasksHandler;
 import api.hadlers.SubtaskHandler;
 import api.hadlers.TaskHandler;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpServer;
 import manager.Managers;
 import manager.TaskManager;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 public class HttpTaskServer {
     private final HttpServer server;
+
+    public static Gson getGson() {
+        return new GsonBuilder()
+                .serializeNulls()
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+                .registerTypeAdapter(Duration.class, new DurationAdapter())
+                .setPrettyPrinting()
+                .create();
+    }
 
     public HttpTaskServer(TaskManager manager) throws IOException {
         server = HttpServer.create(new InetSocketAddress(Settings.HOST, Settings.PORT), 0);
