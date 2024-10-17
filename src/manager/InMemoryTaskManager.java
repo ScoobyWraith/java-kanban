@@ -1,5 +1,6 @@
 package manager;
 
+import exceptions.ManagerTaskNotFound;
 import exceptions.ManagerTaskTimeIntersection;
 import model.Epic;
 import model.Subtask;
@@ -87,38 +88,38 @@ public class InMemoryTaskManager implements TaskManager {
 
     // c. Получение по идентификатору [Task]
     @Override
-    public Task getTaskById(int id) {
-        if (tasks.containsKey(id)) {
-            Task task = tasks.get(id);
-            historyManager.add(task);
-            return task;
+    public Task getTaskById(int id) throws ManagerTaskNotFound {
+        if (!tasks.containsKey(id)) {
+            throw new ManagerTaskNotFound(String.format("Задача с ИД %d не найдена", id));
         }
 
-        return null;
+        Task task = tasks.get(id);
+        historyManager.add(task);
+        return task;
     }
 
     // c. Получение по идентификатору [Subtask]
     @Override
-    public Subtask getSubtaskById(int id) {
-        if (subtasks.containsKey(id)) {
-            Subtask subtask = subtasks.get(id);
-            historyManager.add(subtask);
-            return subtask;
+    public Subtask getSubtaskById(int id) throws ManagerTaskNotFound {
+        if (!subtasks.containsKey(id)) {
+            throw new ManagerTaskNotFound(String.format("Подадача с ИД %d не найдена", id));
         }
 
-        return null;
+        Subtask subtask = subtasks.get(id);
+        historyManager.add(subtask);
+        return subtask;
     }
 
     // c. Получение по идентификатору [Epic]
     @Override
-    public Epic getEpicById(int id) {
-        if (epics.containsKey(id)) {
-            Epic epic = epics.get(id);
-            historyManager.add(epic);
-            return epic;
+    public Epic getEpicById(int id) throws ManagerTaskNotFound {
+        if (!epics.containsKey(id)) {
+            throw new ManagerTaskNotFound(String.format("Еэпи с ИД %d не найден", id));
         }
 
-        return null;
+        Epic epic = epics.get(id);
+        historyManager.add(epic);
+        return epic;
     }
 
     // d. Создание. Сам объект должен передаваться в качестве параметра [Task]
