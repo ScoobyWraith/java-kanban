@@ -102,7 +102,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Subtask getSubtaskById(int id) throws ManagerTaskNotFound {
         if (!subtasks.containsKey(id)) {
-            throw new ManagerTaskNotFound(String.format("Подадача с ИД %d не найдена", id));
+            throw new ManagerTaskNotFound(String.format("Подзадача с ИД %d не найдена", id));
         }
 
         Subtask subtask = subtasks.get(id);
@@ -114,7 +114,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Epic getEpicById(int id) throws ManagerTaskNotFound {
         if (!epics.containsKey(id)) {
-            throw new ManagerTaskNotFound(String.format("Еэпи с ИД %d не найден", id));
+            throw new ManagerTaskNotFound(String.format("Эпик с ИД %d не найден", id));
         }
 
         Epic epic = epics.get(id);
@@ -251,10 +251,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     // 3 a. Получение списка всех подзадач определённого эпика
     @Override
-    public List<Subtask> getEpicSubtasks(int epicId) {
+    public List<Subtask> getEpicSubtasks(int epicId) throws ManagerTaskNotFound {
         if (!epics.containsKey(epicId)) {
-            System.out.println("Эпик с ИД " + epicId + " не найден для получения списка подзадач");
-            return null;
+            throw new ManagerTaskNotFound(String.format("Эпик с ИД %d не найден", epicId));
         }
 
         Epic epic = epics.get(epicId);

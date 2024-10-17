@@ -1,5 +1,7 @@
 package api;
 
+import api.hadlers.EpicHandler;
+import api.hadlers.SubtaskHandler;
 import api.hadlers.TaskHandler;
 import com.sun.net.httpserver.HttpServer;
 import manager.Managers;
@@ -15,6 +17,8 @@ public class HttpTaskServer {
         server = HttpServer.create(new InetSocketAddress(Settings.HOST, Settings.PORT), 0);
 
         server.createContext(TaskHandler.handlePath, new TaskHandler(manager));
+        server.createContext(SubtaskHandler.handlePath, new SubtaskHandler(manager));
+        server.createContext(EpicHandler.handlePath, new EpicHandler(manager));
     }
 
     public static void main(String[] args) throws IOException {
