@@ -76,7 +76,15 @@ public class EpicHandler extends BaseTasksHandler {
 
     @Override
     protected void handlePost(HttpExchange exchange, String postBody) throws IOException {
-        Epic task = gson.fromJson(postBody, Epic.class);
+        Epic task = null;
+
+        try {
+            task = gson.fromJson(postBody, Epic.class);
+        } catch (Exception exception) {
+            sendInternalServerError(exchange, "Невозможно преобразовать JSON.");
+            return;
+        }
+
         manager.createEpic(task);
         sendStatusOk(exchange);
     }

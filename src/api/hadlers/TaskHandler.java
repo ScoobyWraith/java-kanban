@@ -40,13 +40,20 @@ public class TaskHandler extends BaseTasksHandler {
 
     @Override
     protected void handlePost(HttpExchange exchange, String postBody) throws IOException {
-        Task task = gson.fromJson(postBody, Task.class);
+        Task task = null;
 
         try {
-            if (task.getId() == null) {
-                manager.createTask(task);
-            } else {
+            task = gson.fromJson(postBody, Task.class);
+        } catch (Exception exception) {
+            sendInternalServerError(exchange, "Невозможно преобразовать JSON.");
+            return;
+        }
+
+        try {
+            if (task.getId() > 0) {
                 manager.updateTask(task);
+            } else {
+                manager.createTask(task);
             }
 
             sendStatusOk(exchange);

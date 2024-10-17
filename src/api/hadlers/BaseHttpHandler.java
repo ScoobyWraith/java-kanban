@@ -26,6 +26,7 @@ public abstract class BaseHttpHandler implements HttpHandler {
                 .serializeNulls()
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
                 .registerTypeAdapter(Duration.class, new DurationAdapter())
+                .setPrettyPrinting()
                 .create();
     }
 

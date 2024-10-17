@@ -40,13 +40,20 @@ public class SubtaskHandler extends BaseTasksHandler {
 
     @Override
     protected void handlePost(HttpExchange exchange, String postBody) throws IOException {
-        Subtask task = gson.fromJson(postBody, Subtask.class);
+        Subtask task = null;
 
         try {
-            if (task.getId() == null) {
-                manager.createSubtask(task);
-            } else {
+            task = gson.fromJson(postBody, Subtask.class);
+        } catch (Exception exception) {
+            sendInternalServerError(exchange, "Невозможно преобразовать JSON.");
+            return;
+        }
+
+        try {
+            if (task.getId() > 0) {
                 manager.updateSubtask(task);
+            } else {
+                manager.createSubtask(task);
             }
 
             sendStatusOk(exchange);
