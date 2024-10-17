@@ -124,7 +124,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     // d. Создание. Сам объект должен передаваться в качестве параметра [Task]
     @Override
-    public Task createTask(Task task) {
+    public Task createTask(Task task) throws ManagerTaskTimeIntersection {
         task = new Task(task);
         checkTasksTimeIntersection(task);
         task.setId(createAndGetNewTaskId());
@@ -135,7 +135,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     // d. Создание. Сам объект должен передаваться в качестве параметра [Subtask]
     @Override
-    public Subtask createSubtask(Subtask subtask) {
+    public Subtask createSubtask(Subtask subtask) throws ManagerTaskTimeIntersection {
         if (!epics.containsKey(subtask.getEpicId())) {
             return null;
         }
@@ -175,7 +175,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     // e. Обновление. Новая версия объекта с верным идентификатором передаётся в виде параметра [Subtask]
     @Override
-    public void updateSubtask(Subtask subtask) {
+    public void updateSubtask(Subtask subtask) throws ManagerTaskTimeIntersection {
         if (!subtasks.containsKey(subtask.getId())) {
             return;
         }
@@ -290,7 +290,7 @@ public class InMemoryTaskManager implements TaskManager {
         updateEpicStatusAndTimes(epic.getId());
     }
 
-    private void updateInPrioritizedTasks(Task task) {
+    private void updateInPrioritizedTasks(Task task) throws ManagerTaskTimeIntersection {
         // remove old version from list
         removeFromPrioritizedTasks(task.getId());
 
