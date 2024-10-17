@@ -40,7 +40,7 @@ public class EpicHandler extends BaseTasksHandler {
         Optional<Integer> epicIdOpt = getIntFromSecondPathElement(path);
 
         if (epicIdOpt.isEmpty()) {
-            sendInternalServerError(exchange, "Невозможно обработать ИД в запросе.");
+            sendInternalServerError(exchange, "РќРµРІРѕР·РјРѕР¶РЅРѕ РѕР±СЂР°Р±РѕС‚Р°С‚СЊ РР” РІ Р·Р°РїСЂРѕСЃРµ.");
             return;
         }
 

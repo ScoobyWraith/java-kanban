@@ -75,7 +75,7 @@ public abstract class BaseTasksHandler extends BaseHttpHandler {
         Optional<Integer> taskIdOpt = getIntFromSecondPathElement(path);
 
         if (taskIdOpt.isEmpty()) {
-            sendInternalServerError(exchange, "Невозможно обработать ИД в запросе.");
+            sendInternalServerError(exchange, "РќРµРІРѕР·РјРѕР¶РЅРѕ РѕР±СЂР°Р±РѕС‚Р°С‚СЊ РР” РІ Р·Р°РїСЂРѕСЃРµ.");
             return;
         }
 
@@ -90,7 +90,7 @@ public abstract class BaseTasksHandler extends BaseHttpHandler {
         Optional<Integer> taskIdOpt = getIntFromSecondPathElement(path);
 
         if (taskIdOpt.isEmpty()) {
-            sendInternalServerError(exchange, "Невозможно обработать ИД в запросе.");
+            sendInternalServerError(exchange, "РќРµРІРѕР·РјРѕР¶РЅРѕ РѕР±СЂР°Р±РѕС‚Р°С‚СЊ РР” РІ Р·Р°РїСЂРѕСЃРµ.");
             return;
         }
 
