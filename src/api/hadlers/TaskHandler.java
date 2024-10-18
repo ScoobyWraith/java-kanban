@@ -34,8 +34,10 @@ public class TaskHandler extends BaseTasksHandler {
     }
 
     @Override
-    protected void deleteTask(int id) {
+    protected String deleteTask(int id) {
+        Task task = manager.getTaskById(id);
         manager.deleteTask(id);
+        return gson.toJson(task);
     }
 
     @Override

@@ -22,15 +22,17 @@ public class EpicHandler extends BaseTasksHandler {
     protected boolean handleRequest(HttpExchange exchange) throws IOException {
         boolean handled = super.handleRequest(exchange);
 
-        if (!handled) {
-            String method = exchange.getRequestMethod();
-            String path = exchange.getRequestURI().getPath();
-            String regExp = "^" + handlePath + "/\\d+/subtasks$";
+        if (handled) {
+            return true;
+        }
 
-            if (method.equals("GET") && Pattern.matches(regExp, path)) {
-                showSubtasks(exchange, path);
-                return true;
-            }
+        String method = exchange.getRequestMethod();
+        String path = exchange.getRequestURI().getPath();
+        String regExp = "^" + handlePath + "/\\d+/subtasks$";
+
+        if (method.equals("GET") && Pattern.matches(regExp, path)) {
+            showSubtasks(exchange, path);
+            return true;
         }
 
         return false;
@@ -70,8 +72,10 @@ public class EpicHandler extends BaseTasksHandler {
     }
 
     @Override
-    protected void deleteTask(int id) {
+    protected String deleteTask(int id) {
+        Epic task = manager.getEpicById(id);
         manager.deleteEpic(id);
+        return gson.toJson(task);
     }
 
     @Override

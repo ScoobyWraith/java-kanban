@@ -94,7 +94,8 @@ public abstract class BaseTasksHandler extends BaseHttpHandler {
             return;
         }
 
-        deleteTask(taskIdOpt.get());
+        String task = deleteTask(taskIdOpt.get());
+        sendText(exchange, task);
     }
 
     protected Optional<Integer> getIntFromSecondPathElement(String path) {
@@ -111,7 +112,7 @@ public abstract class BaseTasksHandler extends BaseHttpHandler {
 
     protected abstract void showTasks(HttpExchange exchange) throws IOException;
 
-    protected abstract void deleteTask(int id);
+    protected abstract String deleteTask(int id);
 
     protected abstract void handlePost(HttpExchange exchange, String postBody) throws IOException;
 }

@@ -1,4 +1,4 @@
-package api.handlers;
+package api.handlers.base;
 
 import api.HttpTaskServer;
 import api.Settings;
@@ -66,6 +66,16 @@ public abstract class CommonHandlerTest {
         return client.send(request, HttpResponse.BodyHandlers.ofString());
     }
 
+    protected HttpResponse<String> delete(HttpClient client, URI url) throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest
+                .newBuilder()
+                .uri(url)
+                .DELETE()
+                .build();
+
+        return client.send(request, HttpResponse.BodyHandlers.ofString());
+    }
+
     protected HttpResponse<String> post(HttpClient client, URI url, String data) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest
                 .newBuilder()
@@ -75,4 +85,6 @@ public abstract class CommonHandlerTest {
 
         return client.send(request, HttpResponse.BodyHandlers.ofString());
     }
+
+    protected abstract String getEndpoint();
 }

@@ -1,43 +1,54 @@
 package api.handlers;
 
-import api.hadlers.TaskHandler;
+import api.hadlers.SubtaskHandler;
 import api.handlers.base.BaseIntersectionTasksHandlerTest;
-import model.Task;
+import model.Epic;
+import model.Subtask;
 import model.TaskStatus;
 
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-public class TaskHandlerTest extends BaseIntersectionTasksHandlerTest {
-    public TaskHandlerTest() throws IOException {
+public class SubtaskHandlerTest extends BaseIntersectionTasksHandlerTest {
+    private int epicId = 0;
+
+    public SubtaskHandlerTest() throws IOException {
         super();
+    }
+
+    private int getEpicId() {
+        if (epicId == 0) {
+            epicId = manager.createEpic(new Epic("", "")).getId();
+        }
+
+        return epicId;
     }
 
     @Override
     protected String getEndpoint() {
-        return TaskHandler.handlePath;
+        return SubtaskHandler.handlePath;
     }
 
     @Override
     protected String getJsonTask(String title, String description) {
-        return gson.toJson(new Task(title, description, TaskStatus.NEW));
+        return gson.toJson(new Subtask(title, description, TaskStatus.NEW, getEpicId()));
     }
 
     @Override
     protected String getTitleByPosition(int position) {
-        return manager.getTasks().get(position).getTitle();
+        return manager.getSubtasks().get(position).getTitle();
     }
 
     @Override
     protected int createTaskAndAddToManager(String title, String description) {
-        Task task = manager.createTask(new Task(title, description, TaskStatus.NEW));
+        Subtask task = manager.createSubtask(new Subtask(title, description, TaskStatus.NEW, getEpicId()));
         return task.getId();
     }
 
     @Override
     protected int getSizeOfTaskListInManager() {
-        return manager.getTasks().size();
+        return manager.getSubtasks().size();
     }
 
     @Override
@@ -45,22 +56,23 @@ public class TaskHandlerTest extends BaseIntersectionTasksHandlerTest {
                                                      String description,
                                                      Duration duration,
                                                      LocalDateTime startTime) {
-        Task task = manager.createTask(new Task(title, description, TaskStatus.NEW, duration, startTime));
+        Subtask task = manager
+                .createSubtask(new Subtask(title, description, TaskStatus.NEW, getEpicId(), duration, startTime));
         return task.getId();
     }
 
     @Override
     protected String getJsonWithTimes(String title, String description, Duration duration, LocalDateTime startTime) {
-        return gson.toJson(new Task(title, description, TaskStatus.NEW, duration, startTime));
+        return gson.toJson(new Subtask(title, description, TaskStatus.NEW, getEpicId(), duration, startTime));
     }
 
     @Override
     protected String getJsonByIdFromManager(int id) {
-        return gson.toJson(manager.getTaskById(id));
+        return gson.toJson(manager.getSubtaskById(id));
     }
 
     @Override
     protected LocalDateTime getStartTimeById(int id) {
-        return manager.getTaskById(id).getStartTime().get();
+        return manager.getSubtaskById(id).getStartTime().get();
     }
 }

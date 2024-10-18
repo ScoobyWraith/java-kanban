@@ -34,8 +34,10 @@ public class SubtaskHandler extends BaseTasksHandler {
     }
 
     @Override
-    protected void deleteTask(int id) {
+    protected String deleteTask(int id) {
+        Subtask task = manager.getSubtaskById(id);
         manager.deleteSubtask(id);
+        return gson.toJson(task);
     }
 
     @Override
