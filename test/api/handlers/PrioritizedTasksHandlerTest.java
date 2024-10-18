@@ -43,34 +43,34 @@ public class PrioritizedTasksHandlerTest extends CommonHandlerTest {
         URI url = URI.create(getPathForEndpoint(getEndpoint()));
         HttpResponse<String> response = get(client, url);
 
-        Assertions.assertEquals(200, response.statusCode(), "Неверный код получения списка задач");
+        Assertions.assertEquals(200, response.statusCode(), "РќРµРІРµСЂРЅС‹Р№ РєРѕРґ РїРѕР»СѓС‡РµРЅРёСЏ СЃРїРёСЃРєР° Р·Р°РґР°С‡");
 
         JsonElement jsonElement = JsonParser.parseString(response.body());
 
-        Assertions.assertTrue(jsonElement.isJsonArray(), "Вернулся не массив");
+        Assertions.assertTrue(jsonElement.isJsonArray(), "Р’РµСЂРЅСѓР»СЃСЏ РЅРµ РјР°СЃСЃРёРІ");
 
         JsonArray jsonArray = jsonElement.getAsJsonArray();
 
         Assertions.assertEquals(
                 3,
                 jsonArray.size(),
-                "Неверное число элементов в массиве"
+                "РќРµРІРµСЂРЅРѕРµ С‡РёСЃР»Рѕ СЌР»РµРјРµРЅС‚РѕРІ РІ РјР°СЃСЃРёРІРµ"
         );
 
         Assertions.assertEquals(
                 "Task 1",
                 jsonArray.get(0).getAsJsonObject().get("title").getAsString(),
-                "Нарушен порядок очереди приоритезации для 1го элемента"
+                "РќР°СЂСѓС€РµРЅ РїРѕСЂСЏРґРѕРє РѕС‡РµСЂРµРґРё РїСЂРёРѕСЂРёС‚РµР·Р°С†РёРё РґР»СЏ 1РіРѕ СЌР»РµРјРµРЅС‚Р°"
         );
         Assertions.assertEquals(
                 "Subtask 2",
                 jsonArray.get(1).getAsJsonObject().get("title").getAsString(),
-                "Нарушен порядок очереди приоритезации для 2го элемента"
+                "РќР°СЂСѓС€РµРЅ РїРѕСЂСЏРґРѕРє РѕС‡РµСЂРµРґРё РїСЂРёРѕСЂРёС‚РµР·Р°С†РёРё РґР»СЏ 2РіРѕ СЌР»РµРјРµРЅС‚Р°"
         );
         Assertions.assertEquals(
                 "Subtask 1",
                 jsonArray.get(2).getAsJsonObject().get("title").getAsString(),
-                "Нарушен порядок очереди приоритезации для 3го элемента"
+                "РќР°СЂСѓС€РµРЅ РїРѕСЂСЏРґРѕРє РѕС‡РµСЂРµРґРё РїСЂРёРѕСЂРёС‚РµР·Р°С†РёРё РґР»СЏ 3РіРѕ СЌР»РµРјРµРЅС‚Р°"
         );
     }
 }

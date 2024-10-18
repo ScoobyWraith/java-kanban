@@ -28,10 +28,10 @@ public abstract class BaseIntersectionTasksHandlerTest extends BaseTasksHandlerT
         Assertions.assertEquals(
                 406,
                 response.statusCode(),
-                "Неверный код добавленной задачи с пересечением времени"
+                "РќРµРІРµСЂРЅС‹Р№ РєРѕРґ РґРѕР±Р°РІР»РµРЅРЅРѕР№ Р·Р°РґР°С‡Рё СЃ РїРµСЂРµСЃРµС‡РµРЅРёРµРј РІСЂРµРјРµРЅРё"
         );
 
-        Assertions.assertEquals(1, getSizeOfTaskListInManager(), "Некорректное количество задач");
+        Assertions.assertEquals(1, getSizeOfTaskListInManager(), "РќРµРєРѕСЂСЂРµРєС‚РЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ Р·Р°РґР°С‡");
     }
 
     @Test
@@ -43,12 +43,12 @@ public abstract class BaseIntersectionTasksHandlerTest extends BaseTasksHandlerT
         URI url = URI.create(getPathForEndpoint(getEndpoint()));
         HttpResponse<String> response = post(client, url, jsonElement.toString());
 
-        Assertions.assertEquals(201, response.statusCode(), "Неверный код успешно обновленной задачи");
-        Assertions.assertEquals(1, getSizeOfTaskListInManager(), "Некорректное количество задач");
+        Assertions.assertEquals(201, response.statusCode(), "РќРµРІРµСЂРЅС‹Р№ РєРѕРґ СѓСЃРїРµС€РЅРѕ РѕР±РЅРѕРІР»РµРЅРЅРѕР№ Р·Р°РґР°С‡Рё");
+        Assertions.assertEquals(1, getSizeOfTaskListInManager(), "РќРµРєРѕСЂСЂРµРєС‚РЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ Р·Р°РґР°С‡");
         Assertions.assertEquals(
                 "Updated title",
                 getTitleByPosition(0),
-                "Название задачи не обновилось"
+                "РќР°Р·РІР°РЅРёРµ Р·Р°РґР°С‡Рё РЅРµ РѕР±РЅРѕРІРёР»РѕСЃСЊ"
         );
     }
 
@@ -68,13 +68,13 @@ public abstract class BaseIntersectionTasksHandlerTest extends BaseTasksHandlerT
         Assertions.assertEquals(
                 406,
                 response.statusCode(),
-                "Неверный код обновленной задачи с пересечением времени"
+                "РќРµРІРµСЂРЅС‹Р№ РєРѕРґ РѕР±РЅРѕРІР»РµРЅРЅРѕР№ Р·Р°РґР°С‡Рё СЃ РїРµСЂРµСЃРµС‡РµРЅРёРµРј РІСЂРµРјРµРЅРё"
         );
-        Assertions.assertEquals(2, getSizeOfTaskListInManager(), "Некорректное количество задач");
+        Assertions.assertEquals(2, getSizeOfTaskListInManager(), "РќРµРєРѕСЂСЂРµРєС‚РЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ Р·Р°РґР°С‡");
         Assertions.assertEquals(
                 LocalDateTime.of(2020, 1, 1, 0, 0, 0),
                 getStartTimeById(id),
-                "Время начала задачи обновилось"
+                "Р’СЂРµРјСЏ РЅР°С‡Р°Р»Р° Р·Р°РґР°С‡Рё РѕР±РЅРѕРІРёР»РѕСЃСЊ"
         );
     }
 

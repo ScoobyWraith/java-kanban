@@ -20,13 +20,13 @@ public abstract class BaseTasksHandlerTest extends CommonHandlerTest {
         URI url = URI.create(getPathForEndpoint(getEndpoint()));
         HttpResponse<String> response = post(client, url, taskJson);
 
-        Assertions.assertEquals(201, response.statusCode(), "Неверный код успешно добавленной задачи");
+        Assertions.assertEquals(201, response.statusCode(), "РќРµРІРµСЂРЅС‹Р№ РєРѕРґ СѓСЃРїРµС€РЅРѕ РґРѕР±Р°РІР»РµРЅРЅРѕР№ Р·Р°РґР°С‡Рё");
 
-        Assertions.assertEquals(1, getSizeOfTaskListInManager(), "Некорректное количество задач");
+        Assertions.assertEquals(1, getSizeOfTaskListInManager(), "РќРµРєРѕСЂСЂРµРєС‚РЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ Р·Р°РґР°С‡");
         Assertions.assertEquals(
                 "Task 1: very important",
                 getTitleByPosition(0),
-                "Некорректное имя задачи"
+                "РќРµРєРѕСЂСЂРµРєС‚РЅРѕРµ РёРјСЏ Р·Р°РґР°С‡Рё"
         );
     }
 
@@ -39,15 +39,15 @@ public abstract class BaseTasksHandlerTest extends CommonHandlerTest {
         URI url = URI.create(getPathForEndpoint(getEndpoint()));
         HttpResponse<String> response = get(client, url);
 
-        Assertions.assertEquals(200, response.statusCode(), "Неверный код получения списка задач");
+        Assertions.assertEquals(200, response.statusCode(), "РќРµРІРµСЂРЅС‹Р№ РєРѕРґ РїРѕР»СѓС‡РµРЅРёСЏ СЃРїРёСЃРєР° Р·Р°РґР°С‡");
 
         JsonElement jsonelement = JsonParser.parseString(response.body());
 
-        Assertions.assertTrue(jsonelement.isJsonArray(), "Вернулся не массив");
+        Assertions.assertTrue(jsonelement.isJsonArray(), "Р’РµСЂРЅСѓР»СЃСЏ РЅРµ РјР°СЃСЃРёРІ");
         Assertions.assertEquals(
                 3,
                 jsonelement.getAsJsonArray().size(),
-                "Неверное число элементов в массиве"
+                "РќРµРІРµСЂРЅРѕРµ С‡РёСЃР»Рѕ СЌР»РµРјРµРЅС‚РѕРІ РІ РјР°СЃСЃРёРІРµ"
         );
     }
 
@@ -57,16 +57,16 @@ public abstract class BaseTasksHandlerTest extends CommonHandlerTest {
         URI url = URI.create(getPathForEndpoint(getEndpoint() + "/" + id));
         HttpResponse<String> response = get(client, url);
 
-        Assertions.assertEquals(200, response.statusCode(), "Неверный код получения задачи");
+        Assertions.assertEquals(200, response.statusCode(), "РќРµРІРµСЂРЅС‹Р№ РєРѕРґ РїРѕР»СѓС‡РµРЅРёСЏ Р·Р°РґР°С‡Рё");
 
         JsonElement jsonelement = JsonParser.parseString(response.body());
 
-        Assertions.assertTrue(jsonelement.isJsonObject(), "Вернулся не JSON объект");
+        Assertions.assertTrue(jsonelement.isJsonObject(), "Р’РµСЂРЅСѓР»СЃСЏ РЅРµ JSON РѕР±СЉРµРєС‚");
 
         Assertions.assertEquals(
                 "New important task",
                 jsonelement.getAsJsonObject().get("title").getAsString(),
-                "Получена неверная задача"
+                "РџРѕР»СѓС‡РµРЅР° РЅРµРІРµСЂРЅР°СЏ Р·Р°РґР°С‡Р°"
         );
     }
 
@@ -79,7 +79,7 @@ public abstract class BaseTasksHandlerTest extends CommonHandlerTest {
         Assertions.assertEquals(
                 404,
                 response.statusCode(),
-                "Неверный код получения несуществующей задачи"
+                "РќРµРІРµСЂРЅС‹Р№ РєРѕРґ РїРѕР»СѓС‡РµРЅРёСЏ РЅРµСЃСѓС‰РµСЃС‚РІСѓСЋС‰РµР№ Р·Р°РґР°С‡Рё"
         );
     }
 
@@ -92,13 +92,13 @@ public abstract class BaseTasksHandlerTest extends CommonHandlerTest {
         Assertions.assertEquals(
                 200,
                 response.statusCode(),
-                "Неверный код удаления задачи"
+                "РќРµРІРµСЂРЅС‹Р№ РєРѕРґ СѓРґР°Р»РµРЅРёСЏ Р·Р°РґР°С‡Рё"
         );
 
         Assertions.assertEquals(
                 0,
                 getSizeOfTaskListInManager(),
-                "Задача не была удалена"
+                "Р—Р°РґР°С‡Р° РЅРµ Р±С‹Р»Р° СѓРґР°Р»РµРЅР°"
         );
     }
 

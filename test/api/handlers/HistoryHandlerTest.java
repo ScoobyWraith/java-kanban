@@ -43,39 +43,39 @@ public class HistoryHandlerTest extends CommonHandlerTest {
         URI url = URI.create(getPathForEndpoint(getEndpoint()));
         HttpResponse<String> response = get(client, url);
 
-        Assertions.assertEquals(200, response.statusCode(), "Неверный код получения списка задач");
+        Assertions.assertEquals(200, response.statusCode(), "РќРµРІРµСЂРЅС‹Р№ РєРѕРґ РїРѕР»СѓС‡РµРЅРёСЏ СЃРїРёСЃРєР° Р·Р°РґР°С‡");
 
         JsonElement jsonElement = JsonParser.parseString(response.body());
 
-        Assertions.assertTrue(jsonElement.isJsonArray(), "Вернулся не массив");
+        Assertions.assertTrue(jsonElement.isJsonArray(), "Р’РµСЂРЅСѓР»СЃСЏ РЅРµ РјР°СЃСЃРёРІ");
 
         JsonArray jsonArray = jsonElement.getAsJsonArray();
 
         Assertions.assertEquals(
                 4,
                 jsonArray.size(),
-                "Неверное число элементов в массиве"
+                "РќРµРІРµСЂРЅРѕРµ С‡РёСЃР»Рѕ СЌР»РµРјРµРЅС‚РѕРІ РІ РјР°СЃСЃРёРІРµ"
         );
 
         Assertions.assertEquals(
                 "Task 1",
                 jsonArray.get(0).getAsJsonObject().get("title").getAsString(),
-                "Нарушен порядок в истории для 1го элемента"
+                "РќР°СЂСѓС€РµРЅ РїРѕСЂСЏРґРѕРє РІ РёСЃС‚РѕСЂРёРё РґР»СЏ 1РіРѕ СЌР»РµРјРµРЅС‚Р°"
         );
         Assertions.assertEquals(
                 "Subtask 2",
                 jsonArray.get(1).getAsJsonObject().get("title").getAsString(),
-                "Нарушен порядок в истории для 2го элемента"
+                "РќР°СЂСѓС€РµРЅ РїРѕСЂСЏРґРѕРє РІ РёСЃС‚РѕСЂРёРё РґР»СЏ 2РіРѕ СЌР»РµРјРµРЅС‚Р°"
         );
         Assertions.assertEquals(
                 "Epic",
                 jsonArray.get(2).getAsJsonObject().get("title").getAsString(),
-                "Нарушен порядок в истории для 3го элемента"
+                "РќР°СЂСѓС€РµРЅ РїРѕСЂСЏРґРѕРє РІ РёСЃС‚РѕСЂРёРё РґР»СЏ 3РіРѕ СЌР»РµРјРµРЅС‚Р°"
         );
         Assertions.assertEquals(
                 "Subtask 1",
                 jsonArray.get(3).getAsJsonObject().get("title").getAsString(),
-                "Нарушен порядок в истории для 4го элемента"
+                "РќР°СЂСѓС€РµРЅ РїРѕСЂСЏРґРѕРє РІ РёСЃС‚РѕСЂРёРё РґР»СЏ 4РіРѕ СЌР»РµРјРµРЅС‚Р°"
         );
     }
 }

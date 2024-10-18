@@ -57,15 +57,15 @@ public class EpicHandlerTest extends BaseTasksHandlerTest {
         URI url = URI.create(getPathForEndpoint(getEndpoint() + String.format("/%d/subtasks", epic.getId())));
         HttpResponse<String> response = get(client, url);
 
-        Assertions.assertEquals(200, response.statusCode(), "Неверный код получения списка задач");
+        Assertions.assertEquals(200, response.statusCode(), "РќРµРІРµСЂРЅС‹Р№ РєРѕРґ РїРѕР»СѓС‡РµРЅРёСЏ СЃРїРёСЃРєР° Р·Р°РґР°С‡");
 
         JsonElement jsonelement = JsonParser.parseString(response.body());
 
-        Assertions.assertTrue(jsonelement.isJsonArray(), "Вернулся не массив");
+        Assertions.assertTrue(jsonelement.isJsonArray(), "Р’РµСЂРЅСѓР»СЃСЏ РЅРµ РјР°СЃСЃРёРІ");
         Assertions.assertEquals(
                 4,
                 jsonelement.getAsJsonArray().size(),
-                "Неверное число элементов в массиве"
+                "РќРµРІРµСЂРЅРѕРµ С‡РёСЃР»Рѕ СЌР»РµРјРµРЅС‚РѕРІ РІ РјР°СЃСЃРёРІРµ"
         );
     }
 
@@ -80,6 +80,6 @@ public class EpicHandlerTest extends BaseTasksHandlerTest {
         URI url = URI.create(getPathForEndpoint(getEndpoint() + String.format("/%d/subtasks", subtaskId)));
         HttpResponse<String> response = get(client, url);
 
-        Assertions.assertEquals(404, response.statusCode(), "Неверный код отсутсвия эпика");
+        Assertions.assertEquals(404, response.statusCode(), "РќРµРІРµСЂРЅС‹Р№ РєРѕРґ РѕС‚СЃСѓС‚СЃРІРёСЏ СЌРїРёРєР°");
     }
 }
