@@ -91,10 +91,10 @@ public class EpicHandler extends BaseTasksHandler {
 
         if (task.getId() > 0) {
             manager.updateEpic(task);
+            sendStatusOk(exchange);
         } else {
-            manager.createEpic(task);
+            task = manager.createEpic(task);
+            sendStatusOk(exchange, gson.toJson(task));
         }
-
-        sendStatusOk(exchange);
     }
 }

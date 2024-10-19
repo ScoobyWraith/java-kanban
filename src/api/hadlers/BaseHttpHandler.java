@@ -51,6 +51,10 @@ public abstract class BaseHttpHandler implements HttpHandler {
         sendOnlyStatus(h, StatusCode.OK_WITHOUT_BODY.getCode());
     }
 
+    protected void sendStatusOk(HttpExchange h, String text) throws IOException {
+        sendStatusAndText(h, StatusCode.OK_WITHOUT_BODY.getCode(), text);
+    }
+
     protected void sendText(HttpExchange h, String text) throws IOException {
         sendStatusAndText(h, StatusCode.OK_WITH_BODY.getCode(), text);
     }

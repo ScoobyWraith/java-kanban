@@ -36,8 +36,8 @@ public class SubtaskHandlerTest extends BaseIntersectionTasksHandlerTest {
     }
 
     @Override
-    protected String getTitleByPosition(int position) {
-        return manager.getSubtasks().get(position).getTitle();
+    protected String getTitleById(int id) {
+        return manager.getSubtaskById(id).getTitle();
     }
 
     @Override

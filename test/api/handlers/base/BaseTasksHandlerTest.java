@@ -21,11 +21,17 @@ public abstract class BaseTasksHandlerTest extends CommonHandlerTest {
         HttpResponse<String> response = post(client, url, taskJson);
 
         Assertions.assertEquals(201, response.statusCode(), "Неверный код успешно добавленной задачи");
-
         Assertions.assertEquals(1, getSizeOfTaskListInManager(), "Некорректное количество задач");
+
+        JsonElement jsonElement = JsonParser.parseString(response.body());
+
+        Assertions.assertTrue(jsonElement.isJsonObject(), "Вернулся не JSON объект");
+
+        int id = jsonElement.getAsJsonObject().get("id").getAsInt();
+
         Assertions.assertEquals(
                 "Task 1: very important",
-                getTitleByPosition(0),
+                getTitleById(id),
                 "Некорректное имя задачи"
         );
     }
@@ -43,7 +49,7 @@ public abstract class BaseTasksHandlerTest extends CommonHandlerTest {
         Assertions.assertEquals(1, getSizeOfTaskListInManager(), "Некорректное количество задач");
         Assertions.assertEquals(
                 "Updated title",
-                getTitleByPosition(0),
+                getTitleById(id),
                 "Название задачи не обновилось"
         );
     }
@@ -122,7 +128,7 @@ public abstract class BaseTasksHandlerTest extends CommonHandlerTest {
 
     protected abstract String getJsonTask(String title, String description);
 
-    protected abstract String getTitleByPosition(int position);
+    protected abstract String getTitleById(int id);
 
     protected abstract int createTaskAndAddToManager(String title, String description);
 

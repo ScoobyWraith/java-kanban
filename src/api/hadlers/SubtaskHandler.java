@@ -54,11 +54,12 @@ public class SubtaskHandler extends BaseTasksHandler {
         try {
             if (task.getId() > 0) {
                 manager.updateSubtask(task);
+                sendStatusOk(exchange);
             } else {
-                manager.createSubtask(task);
+                task = manager.createSubtask(task);
+                sendStatusOk(exchange, gson.toJson(task));
             }
 
-            sendStatusOk(exchange);
         } catch (ManagerTaskTimeIntersection exception) {
             sendHasInteractions(exchange);
         }

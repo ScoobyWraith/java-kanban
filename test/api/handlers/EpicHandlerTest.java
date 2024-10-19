@@ -30,8 +30,8 @@ public class EpicHandlerTest extends BaseTasksHandlerTest {
     }
 
     @Override
-    protected String getTitleByPosition(int position) {
-        return manager.getEpics().get(position).getTitle();
+    protected String getTitleById(int id) {
+        return manager.getEpicById(id).getTitle();
     }
 
     @Override

@@ -54,11 +54,12 @@ public class TaskHandler extends BaseTasksHandler {
         try {
             if (task.getId() > 0) {
                 manager.updateTask(task);
+                sendStatusOk(exchange);
             } else {
-                manager.createTask(task);
+                task = manager.createTask(task);
+                sendStatusOk(exchange, gson.toJson(task));
             }
 
-            sendStatusOk(exchange);
         } catch (ManagerTaskTimeIntersection exception) {
             sendHasInteractions(exchange);
         }
