@@ -27,10 +27,10 @@ class InMemoryHistoryManagerTest {
 
     @Test
     public void removeOldVersionOfTasksInHistory() {
-        final Task task = taskManager.createAndAddTask(new Task("a", "b", TaskStatus.NEW));
-        final Epic epic = taskManager.createAndAddEpic(new Epic("a", "b"));
+        final Task task = taskManager.createTask(new Task("a", "b", TaskStatus.NEW));
+        final Epic epic = taskManager.createEpic(new Epic("a", "b"));
         final Subtask subtask
-                = taskManager.createAndAddSubtask(new Subtask("a", "b", TaskStatus.NEW, epic.getId()));
+                = taskManager.createSubtask(new Subtask("a", "b", TaskStatus.NEW, epic.getId()));
 
         // 0 - task,
         historyManager.add(task);
@@ -92,10 +92,10 @@ class InMemoryHistoryManagerTest {
 
     @Test
     public void checkRepeatsRemoving() {
-        final Task task = taskManager.createAndAddTask(new Task("a", "b", TaskStatus.NEW));
-        final Epic epic = taskManager.createAndAddEpic(new Epic("a", "b"));
+        final Task task = taskManager.createTask(new Task("a", "b", TaskStatus.NEW));
+        final Epic epic = taskManager.createEpic(new Epic("a", "b"));
         final Subtask subtask
-                = taskManager.createAndAddSubtask(new Subtask("a", "b", TaskStatus.NEW, epic.getId()));
+                = taskManager.createSubtask(new Subtask("a", "b", TaskStatus.NEW, epic.getId()));
 
         historyManager.add(task);
         historyManager.add(epic);
@@ -110,11 +110,11 @@ class InMemoryHistoryManagerTest {
 
     @Test
     public void checkManualRemovingOfTasks() {
-        final Task task1 = taskManager.createAndAddTask(new Task("a", "b", TaskStatus.NEW));
-        final Task task2 = taskManager.createAndAddTask(new Task("a", "b", TaskStatus.NEW));
-        final Epic epic = taskManager.createAndAddEpic(new Epic("a", "b"));
+        final Task task1 = taskManager.createTask(new Task("a", "b", TaskStatus.NEW));
+        final Task task2 = taskManager.createTask(new Task("a", "b", TaskStatus.NEW));
+        final Epic epic = taskManager.createEpic(new Epic("a", "b"));
         final Subtask subtask
-                = taskManager.createAndAddSubtask(new Subtask("a", "b", TaskStatus.NEW, epic.getId()));
+                = taskManager.createSubtask(new Subtask("a", "b", TaskStatus.NEW, epic.getId()));
 
         historyManager.add(task1);
         historyManager.add(task2);

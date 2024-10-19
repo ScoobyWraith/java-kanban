@@ -6,7 +6,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class Task {
-    protected final TaskType type = TaskType.TASK;
     protected String title;
     protected String description;
     protected int id;
@@ -70,7 +69,7 @@ public class Task {
     }
 
     public TaskType getType() {
-        return type;
+        return TaskType.TASK;
     }
 
     public Optional<Duration> getDuration() {

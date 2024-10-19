@@ -4,7 +4,6 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 public class Subtask extends Task {
-    protected final TaskType type = TaskType.SUBTASK;
     private final int epicId;
 
     public Subtask(String title, String description, TaskStatus status, int epicId) {
@@ -40,7 +39,7 @@ public class Subtask extends Task {
     }
 
     public TaskType getType() {
-        return type;
+        return TaskType.SUBTASK;
     }
 
     public Subtask getCopy() {
