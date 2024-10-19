@@ -35,24 +35,6 @@ public abstract class BaseIntersectionTasksHandlerTest extends BaseTasksHandlerT
     }
 
     @Test
-    public void testUpdateTask() throws IOException, InterruptedException {
-        int id = createTaskAndAddToManager("Task 1", "Desc 1");
-        String taskJson = getJsonByIdFromManager(id);
-        JsonElement jsonElement = JsonParser.parseString(taskJson);
-        jsonElement.getAsJsonObject().addProperty("title", "Updated title");
-        URI url = URI.create(getPathForEndpoint(getEndpoint()));
-        HttpResponse<String> response = post(client, url, jsonElement.toString());
-
-        Assertions.assertEquals(201, response.statusCode(), "Неверный код успешно обновленной задачи");
-        Assertions.assertEquals(1, getSizeOfTaskListInManager(), "Некорректное количество задач");
-        Assertions.assertEquals(
-                "Updated title",
-                getTitleByPosition(0),
-                "Название задачи не обновилось"
-        );
-    }
-
-    @Test
     public void testUpdateTaskWithIntersection() throws IOException, InterruptedException {
         int id = createTaskWithTimesAndAddToManager("Task 1", "Desc 1",
                 Duration.ofMinutes(60), LocalDateTime.of(2020, 1, 1, 0, 0, 0));
@@ -87,8 +69,6 @@ public abstract class BaseIntersectionTasksHandlerTest extends BaseTasksHandlerT
                                                String description,
                                                Duration duration,
                                                LocalDateTime startTime);
-
-    protected abstract String getJsonByIdFromManager(int id);
 
     protected abstract LocalDateTime getStartTimeById(int id);
 }

@@ -31,6 +31,24 @@ public abstract class BaseTasksHandlerTest extends CommonHandlerTest {
     }
 
     @Test
+    public void testUpdateTask() throws IOException, InterruptedException {
+        int id = createTaskAndAddToManager("Task 1", "Desc 1");
+        String taskJson = getJsonByIdFromManager(id);
+        JsonElement jsonElement = JsonParser.parseString(taskJson);
+        jsonElement.getAsJsonObject().addProperty("title", "Updated title");
+        URI url = URI.create(getPathForEndpoint(getEndpoint()));
+        HttpResponse<String> response = post(client, url, jsonElement.toString());
+
+        Assertions.assertEquals(201, response.statusCode(), "Неверный код успешно обновленной задачи");
+        Assertions.assertEquals(1, getSizeOfTaskListInManager(), "Некорректное количество задач");
+        Assertions.assertEquals(
+                "Updated title",
+                getTitleByPosition(0),
+                "Название задачи не обновилось"
+        );
+    }
+
+    @Test
     public void testGettingTasks() throws IOException, InterruptedException {
         createTaskAndAddToManager("Task 1", "Desc 1");
         createTaskAndAddToManager("Task 2", "Desc 2");
@@ -109,4 +127,6 @@ public abstract class BaseTasksHandlerTest extends CommonHandlerTest {
     protected abstract int createTaskAndAddToManager(String title, String description);
 
     protected abstract int getSizeOfTaskListInManager();
+
+    protected abstract String getJsonByIdFromManager(int id);
 }

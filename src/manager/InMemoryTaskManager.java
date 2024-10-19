@@ -163,7 +163,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     // e. Обновление. Новая версия объекта с верным идентификатором передаётся в виде параметра [Task]
     @Override
-    public void updateTask(Task task) {
+    public void updateTask(Task task) throws ManagerTaskTimeIntersection {
         if (!tasks.containsKey(task.getId())) {
             return;
         }

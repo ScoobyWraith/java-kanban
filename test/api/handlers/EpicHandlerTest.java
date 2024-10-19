@@ -45,6 +45,11 @@ public class EpicHandlerTest extends BaseTasksHandlerTest {
         return manager.getEpics().size();
     }
 
+    @Override
+    protected String getJsonByIdFromManager(int id) {
+        return gson.toJson(manager.getEpicById(id));
+    }
+
     @Test
     public void testGetEpicSubtasks() throws IOException, InterruptedException {
         Epic epic = manager.createEpic(new Epic("a", "b"));

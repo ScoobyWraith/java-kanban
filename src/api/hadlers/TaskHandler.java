@@ -42,7 +42,7 @@ public class TaskHandler extends BaseTasksHandler {
 
     @Override
     protected void handlePost(HttpExchange exchange, String postBody) throws IOException {
-        Task task = null;
+        Task task;
 
         try {
             task = gson.fromJson(postBody, Task.class);

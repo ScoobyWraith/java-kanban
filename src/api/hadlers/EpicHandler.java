@@ -80,7 +80,7 @@ public class EpicHandler extends BaseTasksHandler {
 
     @Override
     protected void handlePost(HttpExchange exchange, String postBody) throws IOException {
-        Epic task = null;
+        Epic task;
 
         try {
             task = gson.fromJson(postBody, Epic.class);
@@ -89,7 +89,12 @@ public class EpicHandler extends BaseTasksHandler {
             return;
         }
 
-        manager.createEpic(task);
+        if (task.getId() > 0) {
+            manager.updateEpic(task);
+        } else {
+            manager.createEpic(task);
+        }
+
         sendStatusOk(exchange);
     }
 }

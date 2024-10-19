@@ -42,7 +42,7 @@ public class SubtaskHandler extends BaseTasksHandler {
 
     @Override
     protected void handlePost(HttpExchange exchange, String postBody) throws IOException {
-        Subtask task = null;
+        Subtask task;
 
         try {
             task = gson.fromJson(postBody, Subtask.class);
