@@ -1,3 +1,2 @@
 # java-kanban
-Repository for homework project.
-### Автор: Максим Киселев
+Сервис для работы с задачами.
