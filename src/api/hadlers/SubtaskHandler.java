@@ -1,0 +1,67 @@
+package api.hadlers;
+
+import com.sun.net.httpserver.HttpExchange;
+import exceptions.ManagerTaskNotFound;
+import exceptions.ManagerTaskTimeIntersection;
+import manager.TaskManager;
+import model.Subtask;
+
+import java.io.IOException;
+import java.util.List;
+
+public class SubtaskHandler extends BaseTasksHandler {
+    public static final String handlePath = "/subtasks";
+
+    public SubtaskHandler(TaskManager manager) {
+        super(manager);
+    }
+
+    @Override
+    protected String getHandlePath() {
+        return handlePath;
+    }
+
+    @Override
+    protected void showById(HttpExchange exchange, int id) throws ManagerTaskNotFound, IOException {
+        Subtask task = manager.getSubtaskById(id);
+        sendText(exchange, gson.toJson(task));
+    }
+
+    @Override
+    protected void showTasks(HttpExchange exchange) throws IOException {
+        List<Subtask> tasks = manager.getSubtasks();
+        sendText(exchange, gson.toJson(tasks));
+    }
+
+    @Override
+    protected String deleteTask(int id) {
+        Subtask task = manager.getSubtaskById(id);
+        manager.deleteSubtask(id);
+        return gson.toJson(task);
+    }
+
+    @Override
+    protected void handlePost(HttpExchange exchange, String postBody) throws IOException {
+        Subtask task;
+
+        try {
+            task = gson.fromJson(postBody, Subtask.class);
+        } catch (Exception exception) {
+            sendInternalServerError(exchange, "Невозможно преобразовать JSON.");
+            return;
+        }
+
+        try {
+            if (task.getId() > 0) {
+                manager.updateSubtask(task);
+                sendStatusOk(exchange);
+            } else {
+                task = manager.createSubtask(task);
+                sendStatusOk(exchange, gson.toJson(task));
+            }
+
+        } catch (ManagerTaskTimeIntersection exception) {
+            sendHasInteractions(exchange);
+        }
+    }
+}

@@ -9,13 +9,13 @@ import java.util.Set;
 
 public interface TaskManager {
     // a. Получение списка всех задач [Task]
-    List<Task> getAllTasks();
+    List<Task> getTasks();
 
     // a. Получение списка всех задач [Subtask]
-    List<Subtask> getAllSubtasks();
+    List<Subtask> getSubtasks();
 
     // a. Получение списка всех задач [Epic]
-    List<Epic> getAllEpics();
+    List<Epic> getEpics();
 
     // b. Удаление всех задач [Task]
     void removeAllTasks();
@@ -36,13 +36,13 @@ public interface TaskManager {
     Epic getEpicById(int id);
 
     // d. Создание. Сам объект должен передаваться в качестве параметра [Task]
-    Task createAndAddTask(Task task);
+    Task createTask(Task task);
 
     // d. Создание. Сам объект должен передаваться в качестве параметра [Subtask]
-    Subtask createAndAddSubtask(Subtask subtask);
+    Subtask createSubtask(Subtask subtask);
 
     // d. Создание. Сам объект должен передаваться в качестве параметра [Subtask]
-    Epic createAndAddEpic(Epic epic);
+    Epic createEpic(Epic epic);
 
     // e. Обновление. Новая версия объекта с верным идентификатором передаётся в виде параметра [Task]
     void updateTask(Task task);
@@ -54,16 +54,16 @@ public interface TaskManager {
     void updateEpic(Epic epic);
 
     // f. Удаление по идентификатору [Task]
-    void removeTaskById(int id);
+    void deleteTask(int id);
 
     // f. Удаление по идентификатору [Subtask]
-    void removeSubtaskById(int id);
+    void deleteSubtask(int id);
 
     // f. Удаление по идентификатору [Epic]
-    void removeEpicById(int id);
+    void deleteEpic(int id);
 
     // 3 a. Получение списка всех подзадач определённого эпика
-    List<Subtask> getAllSubtasksInEpic(int epicId);
+    List<Subtask> getEpicSubtasks(int epicId);
 
     // Получить список из последних просмотренных задач
     List<Task> getHistory();

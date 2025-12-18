@@ -46,9 +46,9 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
 
     @Test
     public void managerLoadFromEmptyFile() {
-        List<Task> tasks = taskManager.getAllTasks();
-        List<Epic> epics = taskManager.getAllEpics();
-        List<Subtask> subtasks = taskManager.getAllSubtasks();
+        List<Task> tasks = taskManager.getTasks();
+        List<Epic> epics = taskManager.getEpics();
+        List<Subtask> subtasks = taskManager.getSubtasks();
 
         Assertions.assertEquals(
                 0,
@@ -70,20 +70,20 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
 
     @Test
     public void saveAndLoadTasks() {
-        Task task1 = taskManager.createAndAddTask(new Task("Task 1", "Desc", TaskStatus.NEW));
-        Task task2 = taskManager.createAndAddTask(new Task("Task 2", "Desc", TaskStatus.NEW));
+        Task task1 = taskManager.createTask(new Task("Task 1", "Desc", TaskStatus.NEW));
+        Task task2 = taskManager.createTask(new Task("Task 2", "Desc", TaskStatus.NEW));
 
-        Epic epic1 = taskManager.createAndAddEpic(new Epic("Epic 1", "Desc"));
+        Epic epic1 = taskManager.createEpic(new Epic("Epic 1", "Desc"));
 
         Subtask subtask1_1 = taskManager
-                .createAndAddSubtask(new Subtask("Sub 1_1", "Desc", TaskStatus.NEW, epic1.getId()));
+                .createSubtask(new Subtask("Sub 1_1", "Desc", TaskStatus.NEW, epic1.getId()));
         Subtask subtask1_2 = taskManager
-                .createAndAddSubtask(new Subtask("Sub 1_2", "Desc", TaskStatus.NEW, epic1.getId()));
+                .createSubtask(new Subtask("Sub 1_2", "Desc", TaskStatus.NEW, epic1.getId()));
 
-        Epic epic2 = taskManager.createAndAddEpic(new Epic("Epic 2", "Desc"));
+        Epic epic2 = taskManager.createEpic(new Epic("Epic 2", "Desc"));
 
         Subtask subtask2 = taskManager
-                .createAndAddSubtask(new Subtask("Sub 2", "Desc", TaskStatus.NEW, epic2.getId()));
+                .createSubtask(new Subtask("Sub 2", "Desc", TaskStatus.NEW, epic2.getId()));
 
         task2.setTitle("New title");
 
@@ -111,8 +111,8 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
 
     @Test
     public void checkSaveLoadAllSubtaskFields() {
-        Epic epic = taskManager.createAndAddEpic(new Epic("t", "d"));
-        Subtask s = taskManager.createAndAddSubtask(new Subtask(
+        Epic epic = taskManager.createEpic(new Epic("t", "d"));
+        Subtask s = taskManager.createSubtask(new Subtask(
                 "t",
                 "d",
                 TaskStatus.IN_PROGRESS,
@@ -148,7 +148,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
                     File notExistedFile = File.createTempFile("tmp", ".csv");
                     Files.deleteIfExists(notExistedFile.toPath());
                     taskManager = new FileBackedTaskManager(notExistedFile);
-                    Task task = taskManager.createAndAddTask(new Task("t", "d", TaskStatus.NEW));
+                    Task task = taskManager.createTask(new Task("t", "d", TaskStatus.NEW));
 
                     Files.deleteIfExists(notExistedFile.toPath());
                 },

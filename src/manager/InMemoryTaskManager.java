@@ -1,5 +1,6 @@
 package manager;
 
+import exceptions.ManagerTaskNotFound;
 import exceptions.ManagerTaskTimeIntersection;
 import model.Epic;
 import model.Subtask;
@@ -36,19 +37,19 @@ public class InMemoryTaskManager implements TaskManager {
 
     // a. Получение списка всех задач [Task]
     @Override
-    public List<Task> getAllTasks() {
+    public List<Task> getTasks() {
         return new ArrayList<>(tasks.values());
     }
 
     // a. Получение списка всех задач [Subtask]
     @Override
-    public List<Subtask> getAllSubtasks() {
+    public List<Subtask> getSubtasks() {
         return new ArrayList<>(subtasks.values());
     }
 
     // a. Получение списка всех задач [Epic]
     @Override
-    public List<Epic> getAllEpics() {
+    public List<Epic> getEpics() {
         return new ArrayList<>(epics.values());
     }
 
@@ -87,43 +88,43 @@ public class InMemoryTaskManager implements TaskManager {
 
     // c. Получение по идентификатору [Task]
     @Override
-    public Task getTaskById(int id) {
-        if (tasks.containsKey(id)) {
-            Task task = tasks.get(id);
-            historyManager.add(task);
-            return task;
+    public Task getTaskById(int id) throws ManagerTaskNotFound {
+        if (!tasks.containsKey(id)) {
+            throw new ManagerTaskNotFound(String.format("Задача с ИД %d не найдена", id));
         }
 
-        return null;
+        Task task = tasks.get(id);
+        historyManager.add(task);
+        return task;
     }
 
     // c. Получение по идентификатору [Subtask]
     @Override
-    public Subtask getSubtaskById(int id) {
-        if (subtasks.containsKey(id)) {
-            Subtask subtask = subtasks.get(id);
-            historyManager.add(subtask);
-            return subtask;
+    public Subtask getSubtaskById(int id) throws ManagerTaskNotFound {
+        if (!subtasks.containsKey(id)) {
+            throw new ManagerTaskNotFound(String.format("Подзадача с ИД %d не найдена", id));
         }
 
-        return null;
+        Subtask subtask = subtasks.get(id);
+        historyManager.add(subtask);
+        return subtask;
     }
 
     // c. Получение по идентификатору [Epic]
     @Override
-    public Epic getEpicById(int id) {
-        if (epics.containsKey(id)) {
-            Epic epic = epics.get(id);
-            historyManager.add(epic);
-            return epic;
+    public Epic getEpicById(int id) throws ManagerTaskNotFound {
+        if (!epics.containsKey(id)) {
+            throw new ManagerTaskNotFound(String.format("Эпик с ИД %d не найден", id));
         }
 
-        return null;
+        Epic epic = epics.get(id);
+        historyManager.add(epic);
+        return epic;
     }
 
     // d. Создание. Сам объект должен передаваться в качестве параметра [Task]
     @Override
-    public Task createAndAddTask(Task task) {
+    public Task createTask(Task task) throws ManagerTaskTimeIntersection {
         task = new Task(task);
         checkTasksTimeIntersection(task);
         task.setId(createAndGetNewTaskId());
@@ -134,7 +135,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     // d. Создание. Сам объект должен передаваться в качестве параметра [Subtask]
     @Override
-    public Subtask createAndAddSubtask(Subtask subtask) {
+    public Subtask createSubtask(Subtask subtask) throws ManagerTaskTimeIntersection {
         if (!epics.containsKey(subtask.getEpicId())) {
             return null;
         }
@@ -152,7 +153,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     // d. Создание. Сам объект должен передаваться в качестве параметра [Subtask]
     @Override
-    public Epic createAndAddEpic(Epic epic) {
+    public Epic createEpic(Epic epic) {
         epic = new Epic(epic);
         epic.setId(createAndGetNewTaskId());
         epics.put(epic.getId(), epic);
@@ -162,7 +163,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     // e. Обновление. Новая версия объекта с верным идентификатором передаётся в виде параметра [Task]
     @Override
-    public void updateTask(Task task) {
+    public void updateTask(Task task) throws ManagerTaskTimeIntersection {
         if (!tasks.containsKey(task.getId())) {
             return;
         }
@@ -174,7 +175,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     // e. Обновление. Новая версия объекта с верным идентификатором передаётся в виде параметра [Subtask]
     @Override
-    public void updateSubtask(Subtask subtask) {
+    public void updateSubtask(Subtask subtask) throws ManagerTaskTimeIntersection {
         if (!subtasks.containsKey(subtask.getId())) {
             return;
         }
@@ -206,22 +207,18 @@ public class InMemoryTaskManager implements TaskManager {
 
     // f. Удаление по идентификатору [Task]
     @Override
-    public void removeTaskById(int id) {
+    public void deleteTask(int id) {
         if (tasks.containsKey(id)) {
             tasks.remove(id);
             historyManager.remove(id);
             removeFromPrioritizedTasks(id);
-            return;
         }
-
-        System.out.println("Задачи с ИД " + id + " не найдено для удаления");
     }
 
     // f. Удаление по идентификатору [Subtask]
     @Override
-    public void removeSubtaskById(int id) {
+    public void deleteSubtask(int id) {
         if (!subtasks.containsKey(id)) {
-            System.out.println("Подзадачи с ИД " + id + " не найдены для удаления");
             return;
         }
 
@@ -236,9 +233,8 @@ public class InMemoryTaskManager implements TaskManager {
 
     // f. Удаление по идентификатору [Epic]
     @Override
-    public void removeEpicById(int id) {
+    public void deleteEpic(int id) {
         if (!epics.containsKey(id)) {
-            System.out.println("Эпик с ИД " + id + " не найден для удаления");
             return;
         }
 
@@ -255,10 +251,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     // 3 a. Получение списка всех подзадач определённого эпика
     @Override
-    public List<Subtask> getAllSubtasksInEpic(int epicId) {
+    public List<Subtask> getEpicSubtasks(int epicId) throws ManagerTaskNotFound {
         if (!epics.containsKey(epicId)) {
-            System.out.println("Эпик с ИД " + epicId + " не найден для получения списка подзадач");
-            return null;
+            throw new ManagerTaskNotFound(String.format("Эпик с ИД %d не найден", epicId));
         }
 
         Epic epic = epics.get(epicId);
@@ -294,7 +289,7 @@ public class InMemoryTaskManager implements TaskManager {
         updateEpicStatusAndTimes(epic.getId());
     }
 
-    private void updateInPrioritizedTasks(Task task) {
+    private void updateInPrioritizedTasks(Task task) throws ManagerTaskTimeIntersection {
         // remove old version from list
         removeFromPrioritizedTasks(task.getId());
 
